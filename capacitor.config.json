@@ -1,0 +1,11 @@
+{
+  "appId": "com.bobaquest.myapp",
+  "appName": "Boba Quest",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "minWebViewVersion": "60"
+  }
+}

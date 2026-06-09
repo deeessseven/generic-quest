@@ -7,15 +7,16 @@
 // is left byte-for-byte the current game.
 //
 // Optional content overrides under variants/<id>/ (repo root):
-//   - gametext.txt   : APPENDED onto the base gametext (applyText: later lines win), so the file
-//                      only needs the variant's NEW/overridden keys — base text keeps inheriting.
+//   - gametext.txt   : a COMPLETE gametext (full base copy + the variant's additions). If present it
+//                      REPLACES the base gametext.txt in docs/<id>/, so the variant has one fully-
+//                      editable file (hero names, story, celebration text — everything).
 //   - custom-art/*.png : overlaid at build time by vite.config.js's customArtPlugin (same filename
 //                      wins). Nothing to copy here — the art is inlined into the variant's bundle.
 //
 // Usage:  npm run build:variants
 
 import { execSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync, readFileSync, appendFileSync } from 'node:fs';
+import { existsSync, readdirSync, statSync, cpSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -37,10 +38,10 @@ for (const id of ids) {
   console.log(`▶ variant ${id} → docs/${id}/`);
   execSync('npm run build', { stdio: 'inherit', cwd: ROOT, env: { ...process.env, VITE_VARIANT: id } });
 
-  // Append the variant's gametext keys onto the base gametext.txt vite already copied into docs/<id>/.
+  // The variant's gametext.txt is a complete file — REPLACE the base gametext vite copied into docs/<id>/.
   const gametext = join(CONTENT_OVERRIDES, id, 'gametext.txt');
   if (existsSync(gametext)) {
-    appendFileSync(join(DOCS, id, 'gametext.txt'), '\n' + readFileSync(gametext, 'utf8'));
+    cpSync(gametext, join(DOCS, id, 'gametext.txt'));
   }
   console.log(`✓ ${id}`);
 }

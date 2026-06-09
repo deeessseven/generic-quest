@@ -196,12 +196,13 @@ tipBossSuffix = Make sure to Save Game before continuing!\nYou can also shop for
 # Placeholder: {dungeon}=dungeon place name.
 gameOverHint = Is a boss too hard to beat? Then follow the recommended levels for heroes.\nYou can train by fighting other enemies in {dungeon} to level up the heroes.\nThe heroes learn powerful new skills as they level up!
 
-# ── vals variant overrides ───────────────────────────────────────────────────
-# Appended onto generic-quest's base gametext.txt at build (later lines win, so these
-# add to / override the base). Edit freely. Use \n for line breaks; placeholders like
-# {boss3} {town} {hero1} work.
+# ═════════════════════════════════════════════════════════════════════════════
+# vals VARIANT — celebration scenes (BirthdayScene + BirthdayEndScene)
+# Everything ABOVE is a full copy of generic-quest's gametext — edit hero names,
+# story, etc. freely. Everything BELOW is the celebration text.
+# Use \n for line breaks; placeholders like {boss3} {town} {hero1} work.
+# ═════════════════════════════════════════════════════════════════════════════
 
-# ── Celebration Scenes ───────────────────────────────────────────────────────
 # Opening celebration — shown when tapping NEW GAME, before the quest begins.
 celebrationBanner = 🎂 Happy Birthday! 🎂
 celebrationName = FRIEND

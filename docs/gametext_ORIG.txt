@@ -1,0 +1,129 @@
+﻿# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# gametext.txt â€” Generic Quest configurable names
+# Edit any value to the right of = to customise your game.
+# Lines starting with # are comments and are ignored.
+# Do NOT change the keys (left side of =).
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+# â”€â”€ Game Title â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+gameTitle = Generic Quest
+
+# â”€â”€ Hero Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1Name = David
+hero2Name = Jackie
+hero3Name = Captain Ri
+
+# â”€â”€ Hero Classes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1Class = Warrior
+hero2Class = White Mage
+hero3Class = Black Mage
+
+# â”€â”€ Hero Armor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1Armor1 = Chain Mail
+hero2Armor1 = Linen Robe
+hero3Armor1 = Cloth Robe
+
+# â”€â”€ Regular Enemy Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+smallEnemy1Name = Milk Tea Slime
+smallEnemy2Name = Pop Chick Goblin
+mediumEnemy1Name = Slurp Knight
+bigEnemy1Name = Pearl Golem
+
+# â”€â”€ Boss Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+boss1Name = Boba Beast
+boss2Name = Drink Dragon
+boss3Name = Tapioca Tyrant
+
+# â”€â”€ Spell Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+spellFire             = Flame
+spellIce              = Snow
+spellThunder          = Thunder
+spellQuake            = Quake
+spellMend             = Mend
+spellHeal             = Heal
+spellEnchant          = Enchant
+spellAwaken           = Awaken
+spellRevive           = Revive
+spellHero1Special1    = Charged Attack
+spellHero1Special2    = Blade Storm
+spellHero1Special3    = Counterattack
+spellHero1Special4    = Rising Sun
+spellHero2Special1    = Mana Meditation
+spellHero2Special2    = Light Blast
+spellHero2Special3    = Illuminated Drain
+spellHero2Special4    = Recuperative Bliss
+spellHero3Special1    = Dispel
+spellHero3Special2    = Dark Calm
+spellHero3Special3    = Sorcery Flash
+
+# â”€â”€ Enemy Action Names â€” Regular Enemies â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBasicAttack          = Attack
+actionSmallEnemy2Attack1        = Slash
+actionMediumEnemy1Attack1        = Slurp Strike
+actionBigEnemy1Attack1        = Rock Slam
+actionBigEnemy1Attack2        = Pearl Ray
+actionBigEnemy1Attack3        = Sticky Pearls
+
+# â”€â”€ Enemy Action Names â€” Boss 1 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBoss1MagicAttack1    = Raging Roar
+actionBoss1MagicAttack2    = Growling Breath
+actionBoss1PhysicalAttack1 = Claw Strike
+actionBoss1SpecialAttack1  = Lion Mane Entanglement
+actionBoss1Drain           = Den's Intimidation
+
+# â”€â”€ Enemy Action Names â€” Boss 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBoss2PhysicalAttack1 = Scaly Slash
+actionBoss2MagicAttack1    = Draco Ray
+actionBoss2SpecialAttack1  = Inferno Heat Stroke
+actionBoss2PhysicalAttack2 = Tail Strike
+actionBoss2MagicAttack2    = Drake's Breath
+actionBoss2Drain           = Draconic Drain
+
+# â”€â”€ Enemy Action Names â€” Boss 3 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBoss3MagicAttack1    = Black Sugar Rush
+actionBoss3MagicAttack2    = Milk Tea Tsunami
+actionBoss3PhysicalAttack1 = Straw Strike
+actionBoss3MagicAttack3    = Boba Coma
+actionBoss3SpecialAttack1  = Tapioca Trap
+actionBoss3MagicAttack4    = Bubble Breath
+actionBoss3Drain           = Pearl Pain
+
+# â”€â”€ Place Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+placeTown     = Tapioca Town
+placeDungeon  = Drink Dungeon
+placeBootcamp = Boba Bootcamp
+
+# â”€â”€ Story Intro Lines (shown on World Map first visit) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Edit these free-form â€” they are displayed exactly as written.
+introLine1 = The sacred boba pearls have been stolen...
+introLine2 = The Tapioca Tyrant has plunged the world into darkness.
+introLine3 = Three warriors rise to face the darkness.
+introLine4 = Visit Boba Bootcamp and Tapioca Town beforehand, to prepare for your quest into the Drink Dungeon!
+
+# â”€â”€ Dungeon Floor Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+floorB1Name = Drink Dungeon L1
+floorB2Name = Drink Dungeon L2
+floorB3Name = Drink Dungeon L3
+floorB4Name = Boss Battle 1 - L4
+floorB5Name = Boss Battle 2 - L5
+floorB6Name = Final Battle - L6
+
+# â”€â”€ Item Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+itemPotion      = Healing Boba
+itemHiPotion    = Hi-Healing Boba
+itemEther       = Ether Popcorn Chicken
+itemRevivalDrop = Reviving Milk Tea
+itemAntidote    = Antidote Pearl
+
+# â”€â”€ Hero Backstory Lore â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+heroLore1Location = Crystal Boba springs
+heroLore2Org      = Grand Milk Tea Monks
+heroLore2Drink    = pearl milk tea
+
+# â”€â”€ Ending Epilogue Theme Words â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+endingThemeLoot   = boba crystals
+endingThemePearls = boba pearls
+endingThemeDrink  = Boba
+
+# â”€â”€ Location Descriptions (World Map hover) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+descTown = A peaceful boba village. Visit the inn and shops. Save your game here.

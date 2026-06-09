@@ -1,0 +1,18 @@
+# Node dependencies — run "git rm -r --cached node_modules" once to untrack existing files
+node_modules/
+
+# Vite build output — rebuild with "npm run build" then commit docs/
+# (docs is committed to allow GitHub Pages deploys from main/docs)
+dist/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+
+# Android signing secrets — NEVER commit (kept locally + in /AI/keystores backup)
+android/app/bobaquest-release.keystore
+android/key.properties
+crystal-quest-keystore
+*.keystore
+*.jks

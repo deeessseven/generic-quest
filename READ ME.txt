@@ -1,0 +1,59 @@
+● The app is built and ready. Here's a full summary of everything done and what you need to know:
+
+  ---
+  What was done
+
+  Custom art as defaults (BootScene fix)
+
+  Previously, every boot would re-process bundled images and store them in localStorage, which could hit Android
+  WebView's ~5MB storage quota causing images to silently fail and fall back to procedural graphics. Also, any
+  images a player uploaded via the Avatars/Backgrounds menu were overwritten on the next restart by the bundled art.
+
+  Now:
+  - preload() checks localStorage first — if a player has uploaded a custom image for a slot, it loads that;
+  otherwise loads the bundled custom-art/*.png
+  - _processBundledTextures() resizes/flips the bundled art in memory but never writes to localStorage — the
+  _bundled set serves as the flag for hasCustom(), zero quota used
+
+  Android build
+
+  ┌────────────┬───────────────────────┬───────────────────────────┐
+  │    Item    │        Before         │           After           │
+  ├────────────┼───────────────────────┼───────────────────────────┤
+  │ App name   │ Crystal Quest         │ Boba Quest                │
+  ├────────────┼───────────────────────┼───────────────────────────┤
+  │ Signing    │ None configured       │ Signed with new keystore  │
+  ├────────────┼───────────────────────┼───────────────────────────┤
+  │ Gradle JDK │ Java 25 (unsupported) │ JDK 21 via Android Studio │
+  └────────────┴───────────────────────┴───────────────────────────┘
+
+  ---
+  The signed AAB is ready at:
+
+  crystal-quest/android/app/build/outputs/bundle/release/app-release.aab
+  crystal-quest/android/app/build/outputs/bundle/release/app-release.aab
+  (12.7 MB)
+  The signed AAB is ready at:
+
+  crystal-quest/android/app/build/outputs/bundle/release/app-release.aab
+  (12.7 MB)
+
+  ---
+  IMPORTANT — keep these safe
+
+  Your keystore and credentials are in android/key.properties and android/app/bobaquest-release.keystore (both
+  gitignored). Back these up somewhere safe — if you lose the keystore, you can never publish an update to this app on
+  the Play Store.
+
+  Keystore file: android/app/bobaquest-release.keystore
+  Password:      BobaQuest2026!
+  Key alias:     bobaquest
+
+  ---
+  To submit to Google Play Store
+
+  1. Go to https://play.google.com/console
+  2. Create a new app → select "Android" → name it Boba Quest
+  3. Upload app-release.aab under Production → Releases
+  4. Complete the store listing: description, screenshots, icon, content rating
+  5. Submit for review (typically 1–3 days)

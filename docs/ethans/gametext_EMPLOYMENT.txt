@@ -1,0 +1,169 @@
+﻿# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# gametext.txt â€” Employment Quest configurable names
+# Edit any value to the right of = to customize your game.
+# Lines starting with # are comments and are ignored.
+# Do NOT change the keys (left side of =).
+# â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+# â”€â”€ Game Title â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+gameTitle = Employment Quest
+
+# â”€â”€ Hero Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1Name = Sam
+hero2Name = Riley
+hero3Name = Morgan
+
+# â”€â”€ Hero Classes â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1Class = Blue Collar
+hero2Class = Pink Collar
+hero3Class = White Collar
+
+# â”€â”€ Hero Armor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1Armor1 = Hard Hat
+hero2Armor1 = Scrubs
+hero3Armor1 = Blazer
+
+# â”€â”€ Regular Enemy Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+smallEnemy1Name = Unpaid Intern
+smallEnemy2Name = Junior Associate
+mediumEnemy1Name = Middle Manager
+bigEnemy1Name = Corporate Drone
+
+# â”€â”€ Boss Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+boss1Name = Work Boss
+boss2Name = AI Large Language Model
+boss3Name = Robotic AI Agent
+
+# â”€â”€ Spell Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+spellFire             = Fire Alarm
+spellIce              = Hiring Freeze
+spellThunder          = Charging Cable
+spellQuake            = Earthquake Drill
+spellMend             = First Aid
+spellHeal             = Benefits Package
+spellEnchant          = Motivational Speech
+spellAwaken           = Wake-Up Call
+spellRevive           = Rehire
+spellHero1Special1    = Overtime Strike
+spellHero1Special2    = Paper Cuts
+spellHero1Special3    = Counter Offer
+spellHero1Special4    = Labor Union Rights
+spellHero2Special1    = Coffee Break
+spellHero2Special2    = Filing Frenzy
+spellHero2Special3    = Workers' Compensation
+spellHero2Special4    = Team Building Synergy
+spellHero3Special1    = Expense Report
+spellHero3Special2    = Quiet Quitting
+spellHero3Special3    = Hostile Takeover
+
+# â”€â”€ Enemy Action Names â€” Regular Enemies â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBasicAttack          = Attack
+actionSmallEnemy2Attack1   = Staple
+actionMediumEnemy1Attack1  = Micromanage
+actionBigEnemy1Attack1     = Mandatory Overtime
+actionBigEnemy1Attack2     = Budget Cut
+actionBigEnemy1Attack3     = Red Tape
+
+# â”€â”€ Enemy Action Names â€” Boss 1 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBoss1MagicAttack1    = Performance Review
+actionBoss1MagicAttack2    = Staff Meeting
+actionBoss1PhysicalAttack1 = Write-Up
+actionBoss1SpecialAttack1  = Non-Compete Clause
+actionBoss1Drain           = Annual Evaluation
+
+# â”€â”€ Enemy Action Names â€” Boss 2 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBoss2PhysicalAttack1 = Prompt Injection
+actionBoss2MagicAttack1    = Neural Surge
+actionBoss2SpecialAttack1  = Server Overload
+actionBoss2PhysicalAttack2 = Token Strike
+actionBoss2MagicAttack2    = Hallucination
+actionBoss2Drain           = Training Data Harvest
+
+# â”€â”€ Enemy Action Names â€” Boss 3 â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+actionBoss3MagicAttack1    = Automation Wave
+actionBoss3MagicAttack2    = Mass Layoff
+actionBoss3PhysicalAttack1 = Robotic Strike
+actionBoss3MagicAttack3    = System Shutdown
+actionBoss3SpecialAttack1  = Process Lock
+actionBoss3MagicAttack4    = Malware Pulse
+actionBoss3Drain           = Soul Harvest
+
+# â”€â”€ Place Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+placeTown     = Career Center
+placeDungeon  = Corporate Tower
+placeBootcamp = Job Training
+
+# â”€â”€ Story Intro Lines (shown on World Map first visit) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
+introLine1 = Jobs across the land have been automated away...
+introLine2 = The Robotic AI Agent now controls the Corporate Tower.
+introLine3 = Three workers rise to reclaim their livelihoods.
+introLine4 = Visit Job Training and Career Center beforehand, to prepare for your quest into the Corporate Tower!
+
+# â”€â”€ Dungeon Floor Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+floorB1Name = Corporate Tower - Lobby
+floorB2Name = Corporate Tower - Cubicle Farm
+floorB3Name = Corporate Tower - Management Floor
+floorB4Name = Work Boss Battle - Floor 4
+floorB5Name = AI Server Room - Floor 5
+floorB6Name = Final Battle - Floor 6
+
+# â”€â”€ Item Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+itemPotion      = Energy Drink
+itemHiPotion    = Premium Coffee
+itemEther       = Lunch Break
+itemRevivalDrop = Severance Package
+itemAntidote    = HR Complaint
+
+# â”€â”€ Weapon Names â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1weapon1 = Hard Hat Bat
+hero1weapon2 = Steel-Toed Boot
+hero1weapon3 = Union Contract
+hero2weapon1 = IV Drip Stand
+hero2weapon2 = Silver Syringe
+hero2weapon3 = Celestial Wand
+hero3weapon1 = Broken Camera
+hero3weapon2 = Polaroid
+hero3weapon3 = Arcane Camera
+
+# â”€â”€ Weapon Descriptions (shown in shop) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+hero1weapon1Desc = Starting hard hat
+hero1weapon2Desc = ATK +8  Â·  Steel-reinforced for maximum impact
+hero1weapon3Desc = ATK +18  Â·  Legally binding and devastatingly powerful
+hero2weapon1Desc = Starting IV stand
+hero2weapon2Desc = MAG +7  Â·  Precision-tuned for critical care
+hero2weapon3Desc = MAG +16  Â·  Enchanted with ancient illumination
+hero3weapon1Desc = Starting broken camera
+hero3weapon2Desc = MAG +8  Â·  Captures moments of arcane power
+hero3weapon3Desc = MAG +18  Â·  Channels arcane energy
+
+# â”€â”€ Hero Intro Story â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# One paragraph per hero.
+# Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
+hero1Story = A battle-hardened worker from the factory districts. When the Robotic AI Agent began automating jobs across the land, {hero1} was the first to pick up a hard hat. "I've clocked through worse," {hero1} says with a grim smile.
+hero2Story = A gifted healer trained under the Caregivers Guild. {hero2}'s restorative skills flow as warmly as a freshly brewed herbal tea. {hero2} joins the quest to ensure no ally falls in the darkness ahead.
+hero3Story = A brilliant strategist who once crash landed by parachute into the Career Center. {hero3}'s mastery of technology, planning, and sheer audacity has turned failing companies around. Now {hero3} channels all power to fight for workers everywhere.
+
+# â”€â”€ Theme Words ({theme1}/{theme2}/{theme3} placeholders) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Used in ending lines, hero stories, and world map intro.
+theme1 = job offers
+theme2 = paychecks
+theme3 = Opportunity
+
+# â”€â”€ Victory / Ending Scene â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# Supports all placeholders: {hero1}/{hero2}/{hero3}, {boss1}/{boss2}/{boss3},
+#   {town}/{dungeon}/{bootcamp}, {theme1}/{theme2}/{theme3}
+endingVictory = VICTORY!
+endingLine1   = With a final cry, the {boss3} crumbled â€” stacks of {theme1} scattered into light.
+endingLine2   = {hero1}, {hero2}, and {hero3} stood victorious in the silence of the {dungeon}.
+endingLine3   = The sacred {theme2} rained down from the sky, their warmth spreading across the land.
+endingLine4   = {town} erupted in celebration. {theme3} flowed freely once more.
+endingLine5   = The three workers were never forgotten.
+endingTheEnd  = ~ THE END ~
+endingReplay  = âœ¦  Tap to play again  âœ¦
+
+# â”€â”€ Location Descriptions (World Map hover) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+# {boss3} in descDungeon is replaced with the boss3Name defined above.
+descTown      = A bustling career center. Visit the inn and shops. Save your game here.
+descDungeon   = The headquarters of the {boss3}. Multiple floors of corporate peril. Employees beware!
+descBootcamp  = Learn the ropes! Practice every worker ability safely. No experience required.

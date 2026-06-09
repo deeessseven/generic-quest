@@ -6,12 +6,12 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Game Title ───────────────────────────────────────────────────────────────
-gameTitle = Boba Quest
+gameTitle = Val's Bday Boba Quest
 
 # ── Hero Names ───────────────────────────────────────────────────────────────
-hero1Name = David
-hero2Name = Jackie
-hero3Name = Captain Ri
+hero1Name = Valentina
+hero2Name = Adriana
+hero3Name = Lucky
 
 # ── Hero Classes ─────────────────────────────────────────────────────────────
 hero1Class = Warrior
@@ -130,9 +130,9 @@ hero1weapon3 = Ultima Blade
 hero2weapon1 = Oak Staff
 hero2weapon2 = Silver Rod
 hero2weapon3 = Celestial Wand
-hero3weapon1 = Dark Chamber
-hero3weapon2 = Camera Obscura
-hero3weapon3 = Arcane Camera
+hero3weapon1 = Dark Baton
+hero3weapon2 = Mystic Mace
+hero3weapon3 = Arcane Scepter
 
 # ── Weapon Descriptions (shown in shop) ──────────────────────────────────────
 hero1weapon1Desc = Starting sword
@@ -149,8 +149,8 @@ hero3weapon3Desc = MAG +18  ·  Channels arcane energy
 # One paragraph per hero.
 # Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
 hero1Story = A battle-hardened fighter from the outer provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
-hero2Story = A gifted healer trained under the Grand Purple Kow Masters. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
-hero3Story = A brilliant spellcaster who once crash landed by parachute in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
+hero2Story = A gifted healer trained under the Grand Boba Masters. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
+hero3Story = A brilliant spellcaster who once escaped the kennels in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
 
 # ── Boss Intro Speeches ───────────────────────────────────────────────────────
 # Use \n for line breaks within a value.
@@ -203,18 +203,21 @@ gameOverHint = Is a boss too hard to beat? Then follow the recommended levels fo
 # Use \n for line breaks; placeholders like {boss3} {town} {hero1} work.
 # ═════════════════════════════════════════════════════════════════════════════
 
+# Show the decorative dino in the opening celebration (true/false).
+celebrationShowDino = true
+
 # Opening celebration — shown when tapping NEW GAME, before the quest begins.
 celebrationBanner = 🎂 Happy Birthday! 🎂
-celebrationName = FRIEND
-celebrationGreeting = Dear Friend,
+celebrationName = VAL
+celebrationGreeting = Dear Mini Dino,
 celebrationBody = Wishing you a day as epic\nas the adventure ahead!\n\nMay it be filled with\njoy, magic, and fun ✨
-celebrationSignoff = With love ♥
+celebrationSignoff = With love, Funcle David ♥
 celebrationPrompt = Tap anywhere to begin your quest ✨
 
 # Victory celebration — shown after defeating the final boss.
 celebrationEndHeader = 🎉  YOU DID IT!  🎉
 celebrationEndTitleTop = Happy Birthday
-celebrationEndTitleBig = Friend! 🎂
+celebrationEndTitleBig = Valentina! 🎂
 celebrationEndBody = You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy your real celebration —\nyou earned it! 🎂
-celebrationEndSignoff = — With love ♥
+celebrationEndSignoff = — With love, Funcle David ♥
 celebrationEndPrompt = ✦  Tap to return to title  ✦

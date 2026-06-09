@@ -160,6 +160,7 @@ export const GT = {
   // ── Celebration scenes (used by variants that add BirthdayScene/BirthdayEndScene) ──
   // Defined here so applyText() accepts these keys from a variant's gametext.txt.
   // Defaults are generic; a variant overrides them. \n = line break; {boss3}/{town}/{hero1} work.
+  celebrationShowDino: 'false',   // 'true' shows the decorative dino in the opening celebration
   celebrationBanner: '🎂 Happy Birthday! 🎂',
   celebrationName: 'FRIEND',
   celebrationGreeting: 'Dear Friend,',

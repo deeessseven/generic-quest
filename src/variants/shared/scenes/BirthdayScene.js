@@ -4,7 +4,10 @@ import { GameState } from '../../../GameState.js';
 
 const COLORS = [0xff4466, 0xff9922, 0xffdd00, 0x44cc44, 0x2299ff, 0xbb44ff, 0xff66cc];
 
-// Opening celebration scene. All text is editable via gametext.txt (celebration* keys).
+// Shared opening celebration scene, used by default by any variant. All text is editable via
+// gametext.txt (celebration* keys). The decorative dino is opt-in per variant via
+// `celebrationShowDino = true`. For deeper changes, a variant can supply its own BirthdayScene.js
+// and point its variant.js at that instead of this shared one.
 export class BirthdayScene extends Phaser.Scene {
   constructor() { super('BirthdayScene'); }
 
@@ -88,28 +91,30 @@ export class BirthdayScene extends Phaser.Scene {
       this.tweens.add({ targets: lt, y: 145 - 10, yoyo: true, repeat: -1, duration: 600 + i * 80, ease: 'Sine.easeInOut' });
     });
 
-    // ── Dino illustration (drawn) ─────────────────────────────────────────
-    const dino = this.add.graphics();
-    const dx = width / 2, dy = 265;
-    dino.fillStyle(0x44bb44, 1); dino.fillEllipse(dx, dy, 80, 55);
-    dino.fillCircle(dx + 44, dy - 16, 26);
-    dino.fillStyle(0x33aa33, 1); dino.fillEllipse(dx + 62, dy - 14, 26, 16);
-    dino.fillStyle(0xffffff, 1); dino.fillCircle(dx + 48, dy - 22, 7);
-    dino.fillStyle(0x000000, 1); dino.fillCircle(dx + 50, dy - 22, 4);
-    dino.fillStyle(0xffffff, 1); dino.fillCircle(dx + 52, dy - 24, 2);
-    dino.fillStyle(0x228822, 1); dino.fillCircle(dx + 67, dy - 16, 2);
-    dino.lineStyle(2, 0x005500, 1);
-    dino.beginPath(); dino.arc(dx + 60, dy - 8, 8, 0, Math.PI * 0.7); dino.strokePath();
-    dino.fillStyle(0x22aa22, 1);
-    [-30, -15, 0, 15].forEach((ox, i) => {
-      dino.fillTriangle(dx + ox, dy - 26, dx + ox - 6, dy - 42 - i * 3, dx + ox + 6, dy - 42 - i * 3);
-    });
-    dino.fillStyle(0x44bb44, 1); dino.fillTriangle(dx - 40, dy, dx - 72, dy + 10, dx - 38, dy + 18);
-    dino.fillStyle(0x33aa33, 1); dino.fillRect(dx - 20, dy + 22, 14, 18); dino.fillRect(dx + 6, dy + 22, 14, 18);
-    dino.fillRect(dx + 28, dy - 2, 10, 14);
-    dino.fillStyle(0xff4466, 1); dino.fillTriangle(dx + 44, dy - 42, dx + 32, dy - 30, dx + 56, dy - 30);
-    dino.fillStyle(0xffdd00, 1); dino.fillCircle(dx + 44, dy - 44, 4);
-    this.tweens.add({ targets: dino, y: '-=8', yoyo: true, repeat: -1, duration: 1200, ease: 'Sine.easeInOut' });
+    // ── Dino illustration (opt-in: gametext celebrationShowDino = true) ────
+    if (String(GT.celebrationShowDino).trim() === 'true') {
+      const dino = this.add.graphics();
+      const dx = width / 2, dy = 265;
+      dino.fillStyle(0x44bb44, 1); dino.fillEllipse(dx, dy, 80, 55);
+      dino.fillCircle(dx + 44, dy - 16, 26);
+      dino.fillStyle(0x33aa33, 1); dino.fillEllipse(dx + 62, dy - 14, 26, 16);
+      dino.fillStyle(0xffffff, 1); dino.fillCircle(dx + 48, dy - 22, 7);
+      dino.fillStyle(0x000000, 1); dino.fillCircle(dx + 50, dy - 22, 4);
+      dino.fillStyle(0xffffff, 1); dino.fillCircle(dx + 52, dy - 24, 2);
+      dino.fillStyle(0x228822, 1); dino.fillCircle(dx + 67, dy - 16, 2);
+      dino.lineStyle(2, 0x005500, 1);
+      dino.beginPath(); dino.arc(dx + 60, dy - 8, 8, 0, Math.PI * 0.7); dino.strokePath();
+      dino.fillStyle(0x22aa22, 1);
+      [-30, -15, 0, 15].forEach((ox, i) => {
+        dino.fillTriangle(dx + ox, dy - 26, dx + ox - 6, dy - 42 - i * 3, dx + ox + 6, dy - 42 - i * 3);
+      });
+      dino.fillStyle(0x44bb44, 1); dino.fillTriangle(dx - 40, dy, dx - 72, dy + 10, dx - 38, dy + 18);
+      dino.fillStyle(0x33aa33, 1); dino.fillRect(dx - 20, dy + 22, 14, 18); dino.fillRect(dx + 6, dy + 22, 14, 18);
+      dino.fillRect(dx + 28, dy - 2, 10, 14);
+      dino.fillStyle(0xff4466, 1); dino.fillTriangle(dx + 44, dy - 42, dx + 32, dy - 30, dx + 56, dy - 30);
+      dino.fillStyle(0xffdd00, 1); dino.fillCircle(dx + 44, dy - 44, 4);
+      this.tweens.add({ targets: dino, y: '-=8', yoyo: true, repeat: -1, duration: 1200, ease: 'Sine.easeInOut' });
+    }
 
     // ── Message: greeting + body + signoff (all from GT) ──────────────────
     const lines = [];

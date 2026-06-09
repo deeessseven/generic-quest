@@ -4,7 +4,7 @@ import { GameState } from '../../../GameState.js';
 
 const PALETTE = [0xff3399, 0xff9900, 0xffee00, 0x00cc88, 0x3399ff, 0xcc44ff, 0xff6666];
 
-// Victory celebration scene (after the final boss). All text editable via gametext.txt.
+// Shared victory celebration scene (after the final boss). All text editable via gametext.txt.
 export class BirthdayEndScene extends Phaser.Scene {
   constructor() { super('BirthdayEndScene'); }
 

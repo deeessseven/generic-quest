@@ -1,0 +1,21 @@
+# ── vals variant overrides ───────────────────────────────────────────────────
+# Appended onto generic-quest's base gametext.txt at build (later lines win, so these
+# add to / override the base). Edit freely. Use \n for line breaks; placeholders like
+# {boss3} {town} {hero1} work.
+
+# ── Celebration Scenes ───────────────────────────────────────────────────────
+# Opening celebration — shown when tapping NEW GAME, before the quest begins.
+celebrationBanner = 🎂 Happy Birthday! 🎂
+celebrationName = FRIEND
+celebrationGreeting = Dear Friend,
+celebrationBody = Wishing you a day as epic\nas the adventure ahead!\n\nMay it be filled with\njoy, magic, and fun ✨
+celebrationSignoff = With love ♥
+celebrationPrompt = Tap anywhere to begin your quest ✨
+
+# Victory celebration — shown after defeating the final boss.
+celebrationEndHeader = 🎉  YOU DID IT!  🎉
+celebrationEndTitleTop = Happy Birthday
+celebrationEndTitleBig = Friend! 🎂
+celebrationEndBody = You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy your real celebration —\nyou earned it! 🎂
+celebrationEndSignoff = — With love ♥
+celebrationEndPrompt = ✦  Tap to return to title  ✦

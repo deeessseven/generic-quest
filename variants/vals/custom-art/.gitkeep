@@ -1,0 +1,3 @@
+# Drop Val's PNG overrides here (e.g. hero1.png, hero2.png, hero3.png).
+# Any .png placed in this folder replaces the same-named file from generic-quest's
+# public/custom-art/ in the vals build only. Leave empty to inherit all base art.

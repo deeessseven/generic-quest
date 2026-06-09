@@ -11,6 +11,7 @@ import { SaveLoadScene }  from './scenes/SaveLoadScene.js';
 import { NameInputScene }  from './scenes/NameInputScene.js';
 import { HeroIntroScene }  from './scenes/HeroIntroScene.js';
 import { BootcampScene }  from './scenes/BootcampScene.js';
+import { variant }      from './variants/registry.js';
 import { GameState }    from './GameState.js';
 
 // Initialize game state on load
@@ -39,7 +40,8 @@ const config = {
     SaveLoadScene,
     NameInputScene,
     HeroIntroScene,
-    BootcampScene
+    BootcampScene,
+    ...variant.scenes
   ],
   input: {
     activePointers: 2

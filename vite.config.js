@@ -5,6 +5,16 @@ import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Build-time variant selection. With no VITE_VARIANT (the normal `npm run build`), this is the base
+// game: outDir 'docs', emptyOutDir true. With VITE_VARIANT=<id> (used by scripts/build-variants.mjs),
+// it builds that variant into docs/<id>/ WITHOUT emptying docs/. The '@active-variant' alias resolves
+// to ONLY the selected variant's manifest, so the base bundle contains zero variant code.
+const VARIANT = process.env.VITE_VARIANT || '';
+const activeVariant = path.resolve(
+  __dirname,
+  VARIANT ? `src/variants/${VARIANT}/variant.js` : 'src/variants/base/variant.js',
+);
+
 function removeModuleType() {
   return {
     name: 'remove-module-type',
@@ -14,8 +24,12 @@ function removeModuleType() {
   };
 }
 
+// Inlines public/custom-art/*.png as base64. When building a variant, files in
+// variants/<id>/custom-art/ overlay the base art (same filename wins) — so a variant can override
+// just its hero sprites while inheriting everything else.
 function customArtPlugin() {
-  const artDir = path.resolve(__dirname, 'public/custom-art');
+  const baseDir = path.resolve(__dirname, 'public/custom-art');
+  const variantDir = VARIANT ? path.resolve(__dirname, `variants/${VARIANT}/custom-art`) : null;
   const virtualId = 'virtual:custom-art';
   const resolvedId = '\0' + virtualId;
 
@@ -26,13 +40,17 @@ function customArtPlugin() {
     },
     load(id) {
       if (id !== resolvedId) return;
-      if (!fs.existsSync(artDir)) return 'export default {};';
       const entries = {};
-      for (const f of fs.readdirSync(artDir)) {
-        if (!f.endsWith('.png')) continue;
-        const data = fs.readFileSync(path.join(artDir, f));
-        entries[f] = `data:image/png;base64,${data.toString('base64')}`;
-      }
+      const readDir = (dir) => {
+        if (!dir || !fs.existsSync(dir)) return;
+        for (const f of fs.readdirSync(dir)) {
+          if (!f.endsWith('.png')) continue;
+          const data = fs.readFileSync(path.join(dir, f));
+          entries[f] = `data:image/png;base64,${data.toString('base64')}`;
+        }
+      };
+      readDir(baseDir);     // base art
+      readDir(variantDir);  // variant overrides (same filename replaces base)
       return `export default ${JSON.stringify(entries)};`;
     }
   };
@@ -41,8 +59,14 @@ function customArtPlugin() {
 export default defineConfig({
   plugins: [customArtPlugin(), removeModuleType()],
   base: './',
+  resolve: {
+    alias: {
+      '@active-variant': activeVariant,
+    },
+  },
   build: {
-    outDir: 'docs',
+    outDir: VARIANT ? `docs/${VARIANT}` : 'docs',
+    emptyOutDir: !VARIANT,
     assetsDir: 'assets',
     rollupOptions: {
       output: {

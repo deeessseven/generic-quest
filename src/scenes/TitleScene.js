@@ -3,6 +3,7 @@ import { GameState } from '../GameState.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { GT, resolveStory } from '../data/GameText.js';
+import { variant } from '../variants/registry.js';
 
 export class TitleScene extends Phaser.Scene {
   constructor() { super('TitleScene'); }
@@ -94,7 +95,7 @@ export class TitleScene extends Phaser.Scene {
     const menuY = height * 0.65 + 70;
     const hasSave = GameState.hasSave();
 
-    this.newGameBtn = this.createMenuButton(width / 2, menuY, 'NEW GAME', () => this.showDifficultyMenu());
+    this.newGameBtn = this.createMenuButton(width / 2, menuY, 'NEW GAME', () => variant.routes.newGame ? this.scene.start(variant.routes.newGame) : this.showDifficultyMenu());
     if (hasSave) {
       this.contBtn = this.createMenuButton(width / 2, menuY + 80, 'CONTINUE', () => this.openLoadScreen());
     }

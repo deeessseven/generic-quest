@@ -3,6 +3,7 @@ import { GameState } from '../GameState.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { SoundSystem } from '../audio/SoundSystem.js';
 import { GT, resolveStory } from '../data/GameText.js';
+import { variant } from '../variants/registry.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  EndingScene — 14 tappable phases after the final boss is defeated
@@ -178,7 +179,7 @@ export class EndingScene extends Phaser.Scene {
                 if (_titleFired || Date.now() - this._lastSkipAt < 200) return;
                 _titleFired = true;
                 this.cameras.main.fade(600, 0, 0, 0, false, (cam, p) => {
-                  if (p === 1) { GameState.init(); this.scene.start('TitleScene', {}); }
+                  if (p === 1) { GameState.init(); this.scene.start(variant.routes.gameWon || 'TitleScene', {}); }
                 });
               });
             });

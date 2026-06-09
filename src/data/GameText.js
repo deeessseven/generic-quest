@@ -156,6 +156,22 @@ export const GT = {
 
   // Boss floor tip suffix. Placeholder: {town}=town place name.
   tipBossSuffix: 'Make sure to Save Game before continuing!\nYou can also shop for items and weapons in {town} before proceeding.',
+
+  // ── Celebration scenes (used by variants that add BirthdayScene/BirthdayEndScene) ──
+  // Defined here so applyText() accepts these keys from a variant's gametext.txt.
+  // Defaults are generic; a variant overrides them. \n = line break; {boss3}/{town}/{hero1} work.
+  celebrationBanner: '🎂 Happy Birthday! 🎂',
+  celebrationName: 'FRIEND',
+  celebrationGreeting: 'Dear Friend,',
+  celebrationBody: 'Wishing you a day as epic\nas the adventure ahead!\n\nMay it be filled with\njoy, magic, and fun ✨',
+  celebrationSignoff: 'With love ♥',
+  celebrationPrompt: 'Tap anywhere to begin your quest ✨',
+  celebrationEndHeader: '🎉  YOU DID IT!  🎉',
+  celebrationEndTitleTop: 'Happy Birthday',
+  celebrationEndTitleBig: 'Friend! 🎂',
+  celebrationEndBody: 'You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy your real celebration —\nyou earned it! 🎂',
+  celebrationEndSignoff: '— With love ♥',
+  celebrationEndPrompt: '✦  Tap to return to title  ✦',
 };
 
 // Substitute all story placeholders in text using current GT values and party names.

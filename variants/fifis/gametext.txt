@@ -15,8 +15,8 @@ hero3Name = FiFi
 
 # ── Hero Classes ─────────────────────────────────────────────────────────────
 hero1Class = Warrior
-hero2Class = White Mage
-hero3Class = Black Mage
+hero2Class = White Mage (Healer)
+hero3Class = Black Mage (Sorcerer)
 
 # ── Hero Armor ───────────────────────────────────────────────────────────────
 hero1Armor = Chain Mail

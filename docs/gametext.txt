@@ -15,8 +15,8 @@ hero3Name = Captain Ri
 
 # ── Hero Classes ─────────────────────────────────────────────────────────────
 hero1Class = Warrior
-hero2Class = White Mage
-hero3Class = Black Mage
+hero2Class = White Mage (Healer)
+hero3Class = Black Mage (Sorcerer)
 
 # ── Hero Armor ───────────────────────────────────────────────────────────────
 hero1Armor = Chain Mail
@@ -141,14 +141,14 @@ hero1weapon3Desc = ATK +18  ·  A legend forged into everlasting steel
 hero2weapon1Desc = Starting staff
 hero2weapon2Desc = MAG +7  ·  Pure silver amplifies light
 hero2weapon3Desc = MAG +16  ·  Enchanted with ancient illumination
-hero3weapon1Desc = Starting baton
+hero3weapon1Desc = Starting camera
 hero3weapon2Desc = MAG +8  ·  Imbued with raw magic
 hero3weapon3Desc = MAG +18  ·  Channels arcane energy
 
 # ── Hero Intro Story ─────────────────────────────────────────────────────────
 # One paragraph per hero.
 # Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
-hero1Story = A battle-hardened fighter from the outer provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
+hero1Story = A battle-hardened fighter from the outer unlawful provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
 hero2Story = A gifted healer trained under the Grand Purple Kow Masters. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
 hero3Story = A brilliant spellcaster who once crash landed by parachute in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
 

@@ -47,6 +47,15 @@ for (const id of ids) {
   if (existsSync(gametext)) {
     cpSync(gametext, join(DOCS, id, 'gametext.txt'));
   }
+  // Overlay the variant's custom-art PNGs into docs/<id>/custom-art/. Vite copies public/custom-art/
+  // (the BASE art) into every variant folder; at runtime BootScene fetches custom-art/<file>.png and
+  // swaps it in over the inlined art. Without this overlay the variant would show the base heroes.
+  const artDir = join(CONTENT_OVERRIDES, id, 'custom-art');
+  if (existsSync(artDir)) {
+    for (const f of readdirSync(artDir)) {
+      if (f.endsWith('.png')) cpSync(join(artDir, f), join(DOCS, id, 'custom-art', f));
+    }
+  }
   console.log(`✓ ${id}`);
 }
 

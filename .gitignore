@@ -4,6 +4,8 @@ node_modules/
 # Vite build output — rebuild with "npm run build" then commit docs/
 # (docs is committed to allow GitHub Pages deploys from main/docs)
 dist/
+# Lean per-app build for Capacitor native store apps (scripts/build-app.mjs) — never committed
+www/
 
 # OS / editor
 .DS_Store

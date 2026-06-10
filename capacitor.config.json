@@ -1,7 +1,7 @@
 {
-  "appId": "com.bobaquest.myapp",
+  "appId": "com.dacquery.bobaquest",
   "appName": "Boba Quest",
-  "webDir": "dist",
+  "webDir": "www",
   "server": {
     "androidScheme": "https"
   },

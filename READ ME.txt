@@ -45,9 +45,14 @@
   gitignored). Back these up somewhere safe — if you lose the keystore, you can never publish an update to this app on
   the Play Store.
 
-  Keystore file: android/app/bobaquest-release.keystore
-  Password:      BobaQuest2026!
+  Keystore file: android/app/bobaquest-release.keystore   (gitignored)
+  Password:      (kept locally outside git — NOT committed)
   Key alias:     bobaquest
+
+  ⚠ SECURITY: the old password was previously committed and is in git history, so it is
+  considered COMPROMISED. That keystore is now RETIRED. Store apps use Google Play App Signing
+  with a fresh per-app upload key whose password lives only in a local file outside the repo.
+  See STORE-RELEASE.md. Never commit keystore passwords again.
 
   ---
   To submit to Google Play Store

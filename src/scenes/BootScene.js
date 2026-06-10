@@ -190,9 +190,9 @@ export class BootScene extends Phaser.Scene {
 
   _processBundledTextures() {
     const AVATAR_SIZES = {
-      'hero1':        { w: 128, h: 128 },
-      'hero2':         { w: 128, h: 128 },
-      'hero3':           { w: 128, h: 128 },
+      'hero1':        { w: 512, h: 512 },
+      'hero2':         { w: 512, h: 512 },
+      'hero3':           { w: 512, h: 512 },
       'enemy_smallEnemy1':   { w: 128, h: 128 },
       'enemy_smallEnemy2':   { w: 128, h: 128 },
       'enemy_mediumEnemy1':  { w: 128, h: 128 },
@@ -294,28 +294,30 @@ export class BootScene extends Phaser.Scene {
 
   heroSprite(g, key, bodyColor, shadowColor) {
     if (this.textures.exists(key)) return;
-    const W = 64, H = 64;
+    // Procedural fallback drawn at 512×512 (8× the original 64px design) so it stays crisp when
+    // scaled down to 128/256/384 in battle/ending/intro.
+    const S = 8, W = 64 * S, H = 64 * S;
     g.clear();
     // Shadow
     g.fillStyle(shadowColor);
-    g.fillEllipse(W/2, H - 4, 40, 10);
+    g.fillEllipse(W/2, H - 4*S, 40*S, 10*S);
     // Body
     g.fillStyle(bodyColor);
-    g.fillRect(16, 26, 32, 26);
+    g.fillRect(16*S, 26*S, 32*S, 26*S);
     // Head
     g.fillStyle(0xffccaa);
-    g.fillCircle(W/2, 20, 14);
+    g.fillCircle(W/2, 20*S, 14*S);
     // Arms
     g.fillStyle(bodyColor);
-    g.fillRect(8, 28, 10, 20);
-    g.fillRect(46, 28, 10, 20);
+    g.fillRect(8*S, 28*S, 10*S, 20*S);
+    g.fillRect(46*S, 28*S, 10*S, 20*S);
     // Legs
     g.fillStyle(0x223355);
-    g.fillRect(18, 52, 10, 12);
-    g.fillRect(36, 52, 10, 12);
+    g.fillRect(18*S, 52*S, 10*S, 12*S);
+    g.fillRect(36*S, 52*S, 10*S, 12*S);
     // Weapon glow
     g.fillStyle(0xffffff, 0.6);
-    g.fillRect(2, 24, 5, 20);
+    g.fillRect(2*S, 24*S, 5*S, 20*S);
 
     g.generateTexture(key, W, H);
   }

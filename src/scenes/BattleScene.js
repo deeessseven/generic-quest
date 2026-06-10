@@ -274,7 +274,7 @@ export class BattleScene extends Phaser.Scene {
       this._heroHomeY.push(y);
       const key = `hero${i + 1}`;
       const sprite = this.textures.exists(key)
-        ? this.add.image(x, y, key).setScale(1.0).setFlipX(true).setDepth(2)
+        ? this.add.image(x, y, key).setDisplaySize(128, 128).setFlipX(true).setDepth(2)
         : this.add.rectangle(x, y, 36, 44, hero.color).setDepth(2);
       this.heroSprites.push(sprite);
       this.heroHpBars.push({ sprite, hero });

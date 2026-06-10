@@ -567,8 +567,10 @@ export class MenuScene extends Phaser.Scene {
     });
   }
 
-  // Target pixel dimensions for uploaded avatars — 2× the procedural sprite size
+  // Target pixel dimensions for uploaded avatars. Heroes are stored high-res (512×512) and scaled
+  // down at each display (128 battle/training, 256 ending, 384 intro); enemies 128, bosses 256.
   _spriteSize(key) {
+    if (key === 'hero1' || key === 'hero2' || key === 'hero3') return { w: 512, h: 512 };
     if (key === 'enemy_bigEnemy1')  return { w: 128, h: 128 };
     if (key === 'enemy_boss1')      return { w: 256, h: 256 };
     if (key === 'enemy_boss2')      return { w: 256, h: 256 };
@@ -761,15 +763,15 @@ export class MenuScene extends Phaser.Scene {
   }
 
   _regenHeroSprite(g, key, bodyColor, shadowColor) {
-    const W = 64, H = 64;
+    const S = 8, W = 64 * S, H = 64 * S;  // 512×512 (8× the 64px design) to match high-res heroes
     const tmpKey = key + '__regen';
     g.clear();
-    g.fillStyle(shadowColor); g.fillEllipse(W/2, H-4, 40, 10);
-    g.fillStyle(bodyColor);   g.fillRect(16, 26, 32, 26);
-    g.fillStyle(0xffccaa);    g.fillCircle(W/2, 20, 14);
-    g.fillStyle(bodyColor);   g.fillRect(8, 28, 10, 20); g.fillRect(46, 28, 10, 20);
-    g.fillStyle(0x223355);    g.fillRect(18, 52, 10, 12); g.fillRect(36, 52, 10, 12);
-    g.fillStyle(0xffffff, 0.6); g.fillRect(2, 24, 5, 20);
+    g.fillStyle(shadowColor); g.fillEllipse(W/2, H-4*S, 40*S, 10*S);
+    g.fillStyle(bodyColor);   g.fillRect(16*S, 26*S, 32*S, 26*S);
+    g.fillStyle(0xffccaa);    g.fillCircle(W/2, 20*S, 14*S);
+    g.fillStyle(bodyColor);   g.fillRect(8*S, 28*S, 10*S, 20*S); g.fillRect(46*S, 28*S, 10*S, 20*S);
+    g.fillStyle(0x223355);    g.fillRect(18*S, 52*S, 10*S, 12*S); g.fillRect(36*S, 52*S, 10*S, 12*S);
+    g.fillStyle(0xffffff, 0.6); g.fillRect(2*S, 24*S, 5*S, 20*S);
     g.generateTexture(tmpKey, W, H);
     const src = this.textures.getFrame(tmpKey).source.image;
     const canvas = document.createElement('canvas');

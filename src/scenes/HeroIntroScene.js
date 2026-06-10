@@ -31,7 +31,7 @@ export class HeroIntroScene extends Phaser.Scene {
     // ── Hero sprite at 3× scale ───────────────────────────────────────────
     const spriteY = H * 0.20;
     const sprite = this.add.image(W / 2, spriteY, intro.textureKey)
-      .setScale(3)
+      .setDisplaySize(384, 384)
       .setFlipX(true)
       .setOrigin(0.5, 0.5)
       .setAlpha(0);

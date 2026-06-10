@@ -201,7 +201,7 @@ export class EndingScene extends Phaser.Scene {
       const key = `hero${i + 1}`;
       let sprite;
       if (this.textures.exists(key)) {
-        sprite = this.add.image(tx, groundY + 100, key).setScale(2.0).setFlipX(true).setAlpha(0).setDepth(10);
+        sprite = this.add.image(tx, groundY + 100, key).setDisplaySize(256, 256).setFlipX(true).setAlpha(0).setDepth(10);
       } else {
         sprite = this.add.rectangle(tx, groundY + 100, 96, 128, hero.color || heroColors[i]).setAlpha(0).setDepth(10);
       }

@@ -373,7 +373,7 @@ export class BootcampScene extends Phaser.Scene {
 
       const key = `hero${i + 1}`;
       const sprite = this.textures.exists(key)
-        ? this.add.image(hx, hy, key).setScale(1.0).setFlipX(true).setDepth(2)
+        ? this.add.image(hx, hy, key).setDisplaySize(128, 128).setFlipX(true).setDepth(2)
         : this.add.rectangle(hx, hy, 36, 44, hero.color || 0x4488ff).setDepth(2);
       this.heroSprites.push(sprite);
 

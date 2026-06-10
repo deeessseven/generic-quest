@@ -94,8 +94,8 @@ export class BattleScene extends Phaser.Scene {
       }
     );
 
-    // Left-edge secret zone (35×35): instantly win the battle
-    const secret = this.add.rectangle(0, height / 2, 35, 35, 0x000000, 0)
+    // Left-edge secret zone (27×27): instantly win the battle
+    const secret = this.add.rectangle(0, height / 2, 27, 27, 0x000000, 0)
       .setOrigin(0, 0.5)
       .setInteractive({ cursor: 'pointer' });
     let _secretCooldown = false;
@@ -187,7 +187,7 @@ export class BattleScene extends Phaser.Scene {
         if (_curTxt === oTxt) { try { oTxt.destroy(); } catch(e) {} _curTxt = null; }
       });
     };
-    const cheatZone = this.add.zone(W, H / 2, 35, 35).setOrigin(1, 0.5).setInteractive({ useHandCursor: true }).setDepth(20);
+    const cheatZone = this.add.zone(W, H / 2, 27, 27).setOrigin(1, 0.5).setInteractive({ useHandCursor: true }).setDepth(20);
     cheatZone.on('pointerdown', () => {
       _cheatClicks++;
       if (_cheatTimer) { _cheatTimer.remove(false); _cheatTimer = null; }

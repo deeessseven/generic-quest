@@ -197,7 +197,7 @@ tipBossSuffix = Make sure to Save Game before continuing!\nYou can also shop for
 gameOverHint = Is a boss too hard to beat? Then follow the recommended levels for heroes.\nYou can train by fighting other enemies in {dungeon} to level up the heroes.\nThe heroes learn powerful new skills as they level up!
 
 # ═════════════════════════════════════════════════════════════════════════════
-# ethans VARIANT — celebration scenes (BirthdayScene + BirthdayEndScene)
+# ethan VARIANT — celebration scenes (BirthdayScene + BirthdayEndScene)
 # Everything ABOVE is Ethan's full game text (edit freely). Below is the celebration text.
 # Customize these for Ethan. Use \n for line breaks; {boss3}/{town}/{hero1} placeholders work.
 # ═════════════════════════════════════════════════════════════════════════════

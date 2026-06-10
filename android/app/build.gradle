@@ -10,7 +10,7 @@ android {
     namespace "com.crystalquest.jrpg"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.bobaquest.myapp"
+        applicationId "com.dacquery.bobaquest"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

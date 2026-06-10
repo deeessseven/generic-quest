@@ -81,3 +81,62 @@ Requires the **Apple Developer Program ($99/yr)** — enroll early; approval can
 - Data safety (Play) / App Privacy (Apple): **No data collected** — the game is offline, local-save only.
 - Screenshots (per required device sizes), short + full description, app icon (1024px), age rating
   (turn-based fantasy combat → typically Everyone 10+/9+).
+
+---
+
+# ▶ Google Play — base "Boba Quest" first release (current setup)
+
+This is configured and ready to build: `applicationId com.dacquery.bobaquest`, compile/targetSdk **36**,
+release signing reads `android/key.properties` (gitignored). Web build → `www/` via `npm run build:app`.
+
+> ⚠ The SDK bump (34→36) was a config change, not yet verified by a build. On the FIRST Gradle sync
+> in Android Studio, if it prompts to install **SDK Platform 36**, accept it. (Platform 36 is already
+> installed on this machine.) If 36 ever fights you, API **35** also satisfies Play — install Platform
+> 35 and set both `compileSdkVersion`/`targetSdkVersion` to 35 in `android/variables.gradle`.
+
+## One-time machine setup
+- **Android Studio → Settings → Build → Build Tools → Gradle → Gradle JDK = `jbr-21`** (the bundled
+  JDK). Do NOT let it use your system Java 25 — Gradle will fail on it.
+- SDK Manager: ensure **Android 16 / API 36** platform is installed.
+
+## 1. Generate your upload key (you choose the password — keep it OUT of git)
+```
+keytool -genkey -v -keystore bobaquest-upload.keystore -alias bobaquestupload \
+  -keyalg RSA -keysize 2048 -validity 10000
+```
+Put the `.keystore` outside the repo (e.g. `C:\Users\dshen\Desktop\AI\keystores\`). Record the
+password in a local note only.
+
+## 2. Create `android/key.properties` (gitignored — never commit)
+```
+storeFile=C:\\Users\\dshen\\Desktop\\AI\\keystores\\bobaquest-upload.keystore
+storePassword=YOUR_PASSWORD
+keyAlias=bobaquestupload
+keyPassword=YOUR_PASSWORD
+```
+
+## 3. Build the signed AAB
+```
+npm run build:app          # base → www/
+npx cap sync android       # copies www/ into the android project
+```
+Then **Android Studio → Build → Generate Signed App Bundle → Android App Bundle**, pick the keystore
+above, build `release`. Output: `android/app/build/outputs/bundle/release/app-release.aab`.
+(CLI alt: `cd android && ./gradlew bundleRelease` — only if Gradle JDK is set to 21.)
+Bump `versionCode` (and `versionName`) in `android/app/build.gradle` for every new upload.
+
+## 4. Play Console
+1. **Create app** → "Boba Quest", App type = Game, Free.
+2. **App content**: Privacy policy = `https://deeessseven.github.io/generic-quest/privacy.html`;
+   **Data safety = "No data collected or shared"**; complete the content-rating (IARC) questionnaire;
+   target audience; **Ads = No**; (no news/COVID/government).
+3. **Store listing**: 512×512 icon, 1024×500 feature graphic, ≥2 phone screenshots, short + full
+   description.
+4. **Play App Signing**: enroll (Google holds the real key; your upload key signs uploads).
+5. **Internal testing** track (instant): upload the AAB, install on your phone, smoke-test.
+6. **Closed testing** (REQUIRED for a personal account < a few months old): ≥**12 testers** opted in
+   for ≥**14 continuous days** before you can apply for production. **Start this ASAP** — it's the gate.
+7. After the 14 days → apply for **Production** → Google review → live.
+
+> Android 15/16 note: targetSdk ≥35 enforces edge-to-edge display. Verify in testing that the game
+> doesn't underlap the status/navigation bars; if it does, we add safe-area inset handling.

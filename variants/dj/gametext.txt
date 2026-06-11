@@ -6,7 +6,7 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Game Title ───────────────────────────────────────────────────────────────
-gameTitle = David & Jackie's Boba Quest
+gameTitle = David+Jackie's Boba Quest
 
 # ── Hero Names ───────────────────────────────────────────────────────────────
 hero1Name = David
@@ -148,7 +148,7 @@ hero3weapon3Desc = MAG +18  ·  Channels arcane energy
 # ── Hero Intro Story ─────────────────────────────────────────────────────────
 # One paragraph per hero.
 # Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
-hero1Story = A battle-hardened fighter from the outer lawless provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
+hero1Story = A battle-hardened fighter from the outer patently lawless provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
 hero2Story = A gifted healer trained under the Grand Purple Kow Masters. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
 hero3Story = A brilliant spellcaster who once crash landed by parachute in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
 
@@ -206,7 +206,7 @@ gameOverHint = Is a boss too hard to beat? Then follow the recommended levels fo
 celebrationShowDino = false
 
 # Opening celebration — shown when tapping NEW GAME, before the quest begins.
-celebrationBanner = 🎂 Happy Anniversary of our 4th Date! 🎂
+celebrationBanner = ❤️ Happy Anniversary of our 4th Date! ❤️
 celebrationName = JACQUELINE
 celebrationGreeting = Dear Miss Bruin Bear,
 celebrationBody = Wishing you a day as epic\nas the adventure ahead!\n\nMay it be filled with\njoy, magic, and fun ✨
@@ -216,7 +216,7 @@ celebrationPrompt = Tap anywhere to begin your quest ✨
 # Victory celebration — shown after defeating the final boss.
 celebrationEndHeader = 🎉  YOU DID IT!  🎉
 celebrationEndTitleTop = HOORAY
-celebrationEndTitleBig = Jackie! 🎂
-celebrationEndBody = You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy the rest of your day —\nyou earned it! 🎂
+celebrationEndTitleBig = Jackie! 💕
+celebrationEndBody = You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy the rest of your day —\nyou earned it! 😘
 celebrationEndSignoff = I Love You!\n—David
 celebrationEndPrompt = ✦  Tap to return to title  ✦

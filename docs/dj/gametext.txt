@@ -6,12 +6,12 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # ── Game Title ───────────────────────────────────────────────────────────────
-gameTitle = Ethans's Bday Boba Quest
+gameTitle = David & Jackie's Boba Quest
 
 # ── Hero Names ───────────────────────────────────────────────────────────────
-hero1Name = Dr Maxine
-hero2Name = Ethan
-hero3Name = Mr Harris
+hero1Name = David
+hero2Name = Jackie
+hero3Name = Captain Ri
 
 # ── Hero Classes ─────────────────────────────────────────────────────────────
 hero1Class = Warrior
@@ -96,7 +96,7 @@ placeBootcamp = Boba Bootcamp
 
 # ── Story Intro Lines (shown on World Map first visit) ───────────────────────
 # Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
-introLine1 = On {hero2}'s Bday, the sacred {theme1} were stolen...
+introLine1 = The sacred {theme1} have been stolen...
 introLine2 = {boss3} has plunged the world into darkness, void of {theme2}.
 introLine3 = Three warriors rise to face the darkness and reclaim {theme3}.
 introLine4 = Visit {bootcamp} and {town} beforehand, to prepare for your quest into {dungeon}!
@@ -127,36 +127,36 @@ itemAntidoteDesc    = Cures Poison
 hero1weapon1 = Iron Sword
 hero1weapon2 = Steel Saber
 hero1weapon3 = Ultima Blade
-hero2weapon1 = Basketball Rod
-hero2weapon2 = Baller Wand
-hero2weapon3 = Slam Dunk Staff
-hero3weapon1 = Dark Baton
-hero3weapon2 = Mystical Stave
-hero3weapon3 = Arcane Scepter
+hero2weapon1 = Oak Staff
+hero2weapon2 = Silver Rod
+hero2weapon3 = Celestial Wand
+hero3weapon1 = Dark Chamber
+hero3weapon2 = Camera Obscura
+hero3weapon3 = Arcane Camera
 
 # ── Weapon Descriptions (shown in shop) ──────────────────────────────────────
 hero1weapon1Desc = Starting sword
 hero1weapon2Desc = ATK +8  ·  Finely tempered steel
 hero1weapon3Desc = ATK +18  ·  A legend forged into everlasting steel
-hero2weapon1Desc = Starting rod
-hero2weapon2Desc = MAG +7  ·  Pure athletic amplification
-hero2weapon3Desc = MAG +16  ·  Enchanted with basketball tenacity
-hero3weapon1Desc = Starting baton
+hero2weapon1Desc = Starting staff
+hero2weapon2Desc = MAG +7  ·  Pure silver amplifies light
+hero2weapon3Desc = MAG +16  ·  Enchanted with ancient illumination
+hero3weapon1Desc = Starting camera
 hero3weapon2Desc = MAG +8  ·  Imbued with raw magic
 hero3weapon3Desc = MAG +18  ·  Channels arcane energy
 
 # ── Hero Intro Story ─────────────────────────────────────────────────────────
 # One paragraph per hero.
 # Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
-hero1Story = A battle-hardened fighter from the Onefulness province. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
-hero2Story = {hero2} is a gifted healer trained at Alamo Elementary School. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
-hero3Story = A brilliant spellcaster who once explored Harbin in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
+hero1Story = A battle-hardened fighter from the outer lawless provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
+hero2Story = A gifted healer trained under the Grand Purple Kow Masters. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
+hero3Story = A brilliant spellcaster who once crash landed by parachute in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
 
 # ── Boss Intro Speeches ───────────────────────────────────────────────────────
 # Use \n for line breaks within a value.
-boss1Intro = "HAPPY BIRTHDAY {hero2}! But I dislike those who think they can counter my attacks. Don't you dare!\n\nNow, I will drain your HP and MP every turn... HA HA HA!"
-boss2Intro = "Hey BIRTHDAY Boy! You dare face me?! I dodge too quickly. You'll never hit me!\n\nAnd now, I will drain your HP and MP every turn... HO HO HO!"
-boss3Intro = "It's your birthday and you made it this far, but do not think that you are immune to my attacks. I will defeat you!\n\nStarting now, I will drain your HP and MP every turn... HE HE HE!"
+boss1Intro = "I dislike those who think they can counter my attacks. Don't you dare!\n\nNow, I will drain your HP and MP every turn... HA HA HA!"
+boss2Intro = "You dare face me?! I dodge too quickly. You'll never hit me!\n\nAnd now, I will drain your HP and MP every turn... HO HO HO!"
+boss3Intro = "You made it this far, but do not think that you are immune to my attacks. I will defeat you!\n\nStarting now, I will drain your HP and MP every turn... HE HE HE!"
 
 # ── Theme Words ({theme1}/{theme2}/{theme3} placeholders) ────────────────────
 # Used in ending lines, hero stories, and world map intro.
@@ -183,7 +183,7 @@ descDungeon   = {dungeon}: Where {boss3} rules. Multiple floors of peril. Advent
 descBootcamp  = {bootcamp}: Learn the ropes! Practice every skill safely. No experience required.
 
 # ── Dungeon Explore Messages (shown when no items are found) ──────────────────
-exploreFind1 = You find nothing... even though it's your birthday
+exploreFind1 = You find nothing...
 exploreFind2 = The corridor is quiet...
 exploreFind3 = You hear distant footsteps.
 exploreFind4 = You discover a hidden alcove with nothing inside.
@@ -197,26 +197,26 @@ tipBossSuffix = Make sure to Save Game before continuing!\nYou can also shop for
 gameOverHint = Is a boss too hard to beat? Then follow the recommended levels for heroes.\nYou can train by fighting other enemies in {dungeon} to level up the heroes.\nThe heroes learn powerful new skills as they level up!
 
 # ═════════════════════════════════════════════════════════════════════════════
-# ethan VARIANT — celebration scenes (BirthdayScene + BirthdayEndScene)
-# Everything ABOVE is Ethan's full game text (edit freely). Below is the celebration text.
-# Customize these for Ethan. Use \n for line breaks; {boss3}/{town}/{hero1} placeholders work.
+# dj VARIANT — celebration scenes (BirthdayScene + BirthdayEndScene)
+# Everything ABOVE is dj's full game text (edit freely). Below is the celebration text.
+# Customize these for dj. Use \n for line breaks; {boss3}/{town}/{hero1} placeholders work.
 # ═════════════════════════════════════════════════════════════════════════════
 
-# Show the decorative dino in the opening celebration (true/false). Ethan's = off.
+# Show the decorative dino in the opening celebration (true/false). dj's = off.
 celebrationShowDino = false
 
 # Opening celebration — shown when tapping NEW GAME, before the quest begins.
-celebrationBanner = 🎂 Happy Birthday! 🎂
-celebrationName = ETHAN
-celebrationGreeting = Dear Ethan,
+celebrationBanner = 🎂 Happy Anniversary of our 4th Date! 🎂
+celebrationName = JACQUELINE
+celebrationGreeting = Dear Miss Bruin Bear,
 celebrationBody = Wishing you a day as epic\nas the adventure ahead!\n\nMay it be filled with\njoy, magic, and fun ✨
-celebrationSignoff = Sincerely, Uncle David
+celebrationSignoff = Very truly yours, David
 celebrationPrompt = Tap anywhere to begin your quest ✨
 
 # Victory celebration — shown after defeating the final boss.
 celebrationEndHeader = 🎉  YOU DID IT!  🎉
-celebrationEndTitleTop = Happy Birthday
-celebrationEndTitleBig = Ethan! 🎂
-celebrationEndBody = You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy your real celebration —\nyou earned it! 🎂
-celebrationEndSignoff = Sincerely, Uncle David
+celebrationEndTitleTop = HOORAY
+celebrationEndTitleBig = Jackie! 🎂
+celebrationEndBody = You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy the rest of your day —\nyou earned it! 🎂
+celebrationEndSignoff = I Love You!\n—David
 celebrationEndPrompt = ✦  Tap to return to title  ✦

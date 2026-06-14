@@ -13,9 +13,14 @@ import { HeroIntroScene }  from './scenes/HeroIntroScene.js';
 import { BootcampScene }  from './scenes/BootcampScene.js';
 import { variant }      from './variants/registry.js';
 import { GameState }    from './GameState.js';
+import { enableIOSAudioThroughMuteSwitch } from './iosAudioUnmute.js';
 
 // Initialize game state on load
 GameState.init();
+
+// iOS-only: keep a silent <audio> loop alive so the game's Web Audio music/SFX play even when
+// the hardware mute (orange ring) switch is on. No-op on Android/desktop. See iosAudioUnmute.js.
+enableIOSAudioThroughMuteSwitch();
 
 const config = {
   type: Phaser.AUTO,

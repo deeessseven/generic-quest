@@ -1,6 +1,6 @@
 {
-  "name": "Generic Quest",
-  "short_name": "Generic Quest",
+  "name": "FiFi's Boba Quest",
+  "short_name": "FiFi's Boba Quest",
   "description": "A themeable turn-based JRPG",
   "start_url": "./",
   "scope": "./",

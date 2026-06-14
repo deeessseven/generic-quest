@@ -13,21 +13,57 @@
 //   - custom-art/*.png : overlaid at build time by vite.config.js's customArtPlugin (same filename
 //                      wins). Nothing to copy here — the art is inlined into the variant's bundle.
 //
+// Per-variant Home Screen / install icon + title (derived):
+//   - icon          : built from the variant's title.png (or base) → docs/<id>/icon-180/192/512.png
+//                     (see scripts/make-icons.mjs).
+//   - install label : the variant's gametext `gameTitle` baked into manifest name/short_name (the
+//                     Android install label). The web tab + iOS label come from gametext at runtime
+//                     (BootScene sets document.title), so they update without a rebuild; the Android
+//                     install name is baked here and only changes on a rebuild.
+//
 // Usage:  npm run build:variants
 
 import { execSync } from 'node:child_process';
-import { existsSync, readdirSync, statSync, cpSync } from 'node:fs';
+import { existsSync, readdirSync, statSync, cpSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { makeIcons } from './make-icons.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'docs');
+const PUBLIC = join(ROOT, 'public');
 const SRC_VARIANTS = join(ROOT, 'src', 'variants');
 const CONTENT_OVERRIDES = join(ROOT, 'variants'); // optional per-variant text/art overrides
+
+// Read `gameTitle` from a gametext.txt, collapsing any \n two-line marker to one line.
+function readGameTitle(gametextPath) {
+  if (!existsSync(gametextPath)) return null;
+  const m = readFileSync(gametextPath, 'utf8').match(/^\s*gameTitle\s*=\s*(.+?)\s*$/m);
+  return m ? m[1].replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim() : null;
+}
+
+// Bake a title into docs<...>/manifest.json (the Android install label).
+function patchManifestName(docsDir, title) {
+  const p = join(docsDir, 'manifest.json');
+  if (!existsSync(p)) return;
+  const m = JSON.parse(readFileSync(p, 'utf8'));
+  m.name = title;
+  m.short_name = title;
+  writeFileSync(p, JSON.stringify(m, null, 2) + '\n');
+}
+
+// The icon source for a variant: its own title.png override if present, else the base title.png.
+function titlePngFor(id) {
+  const override = join(CONTENT_OVERRIDES, id, 'custom-art', 'title.png');
+  return existsSync(override) ? override : join(PUBLIC, 'custom-art', 'title.png');
+}
 
 // 1. Base build → docs/ (emptyOutDir true clears any stale variant subfolders first).
 console.log('▶ base → docs/');
 execSync('npm run build', { stdio: 'inherit', cwd: ROOT });
+// Base icons come from public/ (committed, built from public/custom-art/title.png). Bake base title.
+const baseTitle = readGameTitle(join(PUBLIC, 'gametext.txt'));
+if (baseTitle) patchManifestName(DOCS, baseTitle);
 
 // 2. Every variant under src/variants/ that has a variant.js → docs/<id>/ (emptyOutDir false leaves
 //    docs/). Excludes base and helper folders like shared/ (which hold only reusable scenes).
@@ -56,6 +92,13 @@ for (const id of ids) {
       if (f.endsWith('.png')) cpSync(join(artDir, f), join(DOCS, id, 'custom-art', f));
     }
   }
+
+  // Home Screen / install icon from this variant's title.png (falls back to base).
+  makeIcons(titlePngFor(id), join(DOCS, id));
+  // Android install label = this variant's gameTitle (falls back to base).
+  const title = readGameTitle(gametext) || baseTitle;
+  if (title) patchManifestName(join(DOCS, id), title);
+
   console.log(`✓ ${id}`);
 }
 

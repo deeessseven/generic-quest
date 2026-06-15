@@ -35,6 +35,12 @@ const PUBLIC = join(ROOT, 'public');
 const SRC_VARIANTS = join(ROOT, 'src', 'variants');
 const CONTENT_OVERRIDES = join(ROOT, 'variants'); // optional per-variant text/art overrides
 const SW_VERSION = String(Date.now()); // stamped into each deployed sw.js → a redeploy purges old caches
+// This site's GitHub Pages base path, used as each app's manifest `id` (origin-relative). Gives
+// base + every variant a DISTINCT PWA identity — otherwise, with no explicit id, the base app's
+// scope (/generic-quest/) swallows the variants' nested paths and installs get conflated. Each id
+// equals the path the browser already derives from start_url, so existing correct installs are NOT
+// orphaned.
+const REPO_BASE = '/generic-quest/';
 
 // Stamp the build version into a folder's service worker (replaces the __SW_VERSION__ placeholder).
 function stampSW(dir) {
@@ -49,13 +55,14 @@ function readGameTitle(gametextPath) {
   return m ? m[1].replace(/\\n/g, ' ').replace(/\s+/g, ' ').trim() : null;
 }
 
-// Bake a title into docs<...>/manifest.json (the Android install label).
-function patchManifestName(docsDir, title) {
+// Bake the install label (name/short_name) and a stable per-app `id` into docs<...>/manifest.json.
+// `title` may be null (then only `id` is set).
+function patchManifestName(docsDir, title, appId) {
   const p = join(docsDir, 'manifest.json');
   if (!existsSync(p)) return;
   const m = JSON.parse(readFileSync(p, 'utf8'));
-  m.name = title;
-  m.short_name = title;
+  if (title) { m.name = title; m.short_name = title; }
+  if (appId) m.id = appId;
   writeFileSync(p, JSON.stringify(m, null, 2) + '\n');
 }
 
@@ -73,7 +80,7 @@ execSync('npm run build', { stdio: 'inherit', cwd: ROOT });
 makeIcons(join(PUBLIC, 'custom-art', 'title.png'), DOCS);
 stampSW(DOCS);
 const baseTitle = readGameTitle(join(PUBLIC, 'gametext.txt'));
-if (baseTitle) patchManifestName(DOCS, baseTitle);
+patchManifestName(DOCS, baseTitle, REPO_BASE);
 
 // 2. Every variant under src/variants/ that has a variant.js → docs/<id>/ (emptyOutDir false leaves
 //    docs/). Excludes base and helper folders like shared/ (which hold only reusable scenes).
@@ -108,7 +115,7 @@ for (const id of ids) {
   stampSW(join(DOCS, id));
   // Android install label = this variant's gameTitle (falls back to base).
   const title = readGameTitle(gametext) || baseTitle;
-  if (title) patchManifestName(join(DOCS, id), title);
+  patchManifestName(join(DOCS, id), title, REPO_BASE + id + '/');
 
   console.log(`✓ ${id}`);
 }

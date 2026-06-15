@@ -142,9 +142,28 @@ function encodePNG(width, height, rgba) {
   return Buffer.concat([sig, chunk('IHDR', ihdr), chunk('IDAT', idatData), chunk('IEND', Buffer.alloc(0))]);
 }
 
+// Build a maskable variant: the icon scaled into the center safe zone (~80%) on a solid
+// background, so Android's adaptive-icon crop only eats the padding, never the artwork.
+function padToMaskable(square, side, bg, scale = 0.8) {
+  const inner = Math.max(1, Math.round(side * scale));
+  const innerImg = resize(square, side, side, inner, inner);
+  const out = Buffer.alloc(side * side * 4);
+  for (let i = 0; i < side * side; i++) { const d = i * 4; out[d] = bg[0]; out[d + 1] = bg[1]; out[d + 2] = bg[2]; out[d + 3] = 255; }
+  const off = Math.floor((side - inner) / 2);
+  for (let yy = 0; yy < inner; yy++) for (let xx = 0; xx < inner; xx++) {
+    const s = (yy * inner + xx) * 4, a = innerImg[s + 3] / 255;
+    const d = ((off + yy) * side + (off + xx)) * 4;
+    out[d]     = Math.round(innerImg[s]     * a + bg[0] * (1 - a));
+    out[d + 1] = Math.round(innerImg[s + 1] * a + bg[1] * (1 - a));
+    out[d + 2] = Math.round(innerImg[s + 2] * a + bg[2] * (1 - a));
+    out[d + 3] = 255;
+  }
+  return out;
+}
+
 // ── API ───────────────────────────────────────────────────────────────────────
-// Crop title.png to a square (focal point ~38% down — the title character) and write
-// icon-180/192/512.png into outDir.
+// Crop title.png to a square (focal ~38% down) and write icon-180/192/512.png plus maskable
+// variants (icon-maskable-192/512.png) into outDir.
 export function makeIcons(srcTitlePng, outDir) {
   const { width, height, rgba } = decodePNG(readFileSync(srcTitlePng));
   const side = Math.min(width, height);
@@ -153,6 +172,11 @@ export function makeIcons(srcTitlePng, outDir) {
   const square = cropSquare(rgba, width, height, x, y, side);
   for (const size of OUT_SIZES) {
     writeFileSync(join(outDir, `icon-${size}.png`), encodePNG(size, size, resize(square, side, side, size, size)));
+  }
+  // Maskable (Android adaptive icon): artwork at ~80% on the dark theme background (#000011).
+  const mask = padToMaskable(square, side, [0x00, 0x00, 0x11]);
+  for (const size of [192, 512]) {
+    writeFileSync(join(outDir, `icon-maskable-${size}.png`), encodePNG(size, size, resize(mask, side, side, size, size)));
   }
   return { side, y };
 }

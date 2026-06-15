@@ -15,6 +15,7 @@ import { variant }      from './variants/registry.js';
 import { GameState }    from './GameState.js';
 import { MusicSystem }  from './audio/MusicSystem.js';
 import { enableIOSAudioThroughMuteSwitch } from './iosAudioUnmute.js';
+import './registerSW.js';
 
 // Initialize game state on load
 GameState.init();

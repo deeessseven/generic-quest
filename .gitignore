@@ -18,3 +18,4 @@ android/key.properties
 crystal-quest-keystore
 *.keystore
 *.jks
+.gstack/

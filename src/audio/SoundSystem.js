@@ -1,6 +1,5 @@
 // Procedural sound effects via Web Audio API — no external files needed
 import { MusicSystem } from './MusicSystem.js';
-import { syncIOSAudioHolder } from '../iosAudioUnmute.js';
 
 export const SoundSystem = {
   _sfxGain: null,
@@ -51,7 +50,6 @@ export const SoundSystem = {
     if (this._sfxGain) {
       this._sfxGain.gain.value = this._sfxMuted ? 0 : this._volume;
     }
-    syncIOSAudioHolder(); // re-assert the iOS playback audio session (mute-switch override)
     return this._sfxMuted;
   },
 

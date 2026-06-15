@@ -1,5 +1,3 @@
-import { syncIOSAudioHolder } from '../iosAudioUnmute.js';
-
 // Procedural chiptune music via Web Audio API — no external files needed
 
 const SCHEDULE_AHEAD = 0.15;  // seconds to look ahead
@@ -547,7 +545,6 @@ export const MusicSystem = {
         this._muted ? 0 : this._volume, ctx.currentTime, 0.1
       );
     }
-    syncIOSAudioHolder(); // re-assert the iOS playback audio session (mute-switch override)
     return this._muted;
   },
 

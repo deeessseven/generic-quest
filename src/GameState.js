@@ -171,7 +171,12 @@ export const GameState = {
     if (!this.data.ownedWeapons.includes(id)) this.data.ownedWeapons.push(id);
   },
 
-  // Equip a weapon on a party member. Adjusts the relevant stat in-place.
+  // Equip a weapon on a party member, adjusting its bonus stat in-place.
+  // INVARIANT: every weapon a given hero can equip boosts the SAME stat (see weapons.js — hero1's
+  // are all 'atk', hero2/hero3's all 'mag'), so subtracting the previous bonus from weaponDef.stat
+  // is always correct. If a hero ever gets weapons on DIFFERENT stats, track the stat the bonus was
+  // applied to and subtract from THAT — otherwise this corrupts the new stat (and a `weaponStat`
+  // field must default safely for pre-existing saves, which lack it).
   equipWeapon(heroIdx, weaponDef) {
     const hero = this.data.party[heroIdx];
     const oldBonus = hero.weaponBonus || 0;

@@ -14,20 +14,16 @@ import { BootcampScene }  from './scenes/BootcampScene.js';
 import { variant }      from './variants/registry.js';
 import { GameState }    from './GameState.js';
 import { MusicSystem }  from './audio/MusicSystem.js';
-import { SoundSystem }  from './audio/SoundSystem.js';
 import { enableIOSAudioThroughMuteSwitch } from './iosAudioUnmute.js';
 import './registerSW.js';
 
 // Initialize game state on load
 GameState.init();
 
-// iOS-only: keep a silent <audio> loop alive so the game's Web Audio music/SFX play even when
-// the hardware mute (orange ring) switch is on. Pass the live context (SoundSystem shares it)
-// so the holder's session switch can't leave it stuck suspended. No-op on Android/desktop.
-enableIOSAudioThroughMuteSwitch(
-  () => MusicSystem._ctx || null,
-  () => !MusicSystem.getMuted() || !SoundSystem.getSfxMuted(), // holder runs only while audio is on
-);
+// iOS: set the Web Audio "playback" session so sound plays through the hardware mute (orange ring)
+// switch — no media element, so no Now Playing / Dynamic Island indicator. Pass the live context so
+// it can be resumed on gesture/return. No-op on Android/desktop. See iosAudioUnmute.js.
+enableIOSAudioThroughMuteSwitch(() => MusicSystem._ctx || null);
 
 const config = {
   type: Phaser.AUTO,

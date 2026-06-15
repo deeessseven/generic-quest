@@ -51,7 +51,7 @@ export const SoundSystem = {
     if (this._sfxGain) {
       this._sfxGain.gain.value = this._sfxMuted ? 0 : this._volume;
     }
-    syncIOSAudioHolder(); // start/stop the iOS mute-switch holder with audio (controls the media bubble)
+    syncIOSAudioHolder(); // re-assert the iOS playback audio session (mute-switch override)
     return this._sfxMuted;
   },
 

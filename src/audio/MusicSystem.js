@@ -547,7 +547,7 @@ export const MusicSystem = {
         this._muted ? 0 : this._volume, ctx.currentTime, 0.1
       );
     }
-    syncIOSAudioHolder(); // start/stop the iOS mute-switch holder with audio (controls the media bubble)
+    syncIOSAudioHolder(); // re-assert the iOS playback audio session (mute-switch override)
     return this._muted;
   },
 

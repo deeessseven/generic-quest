@@ -62,6 +62,14 @@ function customArtPlugin() {
 
 export default defineConfig({
   plugins: [customArtPlugin(), removeModuleType()],
+  // Per-game localStorage scope, baked in at build time. localStorage is shared across same-origin
+  // paths, so base + every Pages variant (served from one github.io origin) would otherwise share
+  // one save/upload pool. Web variant builds get a '<id>_' scope so each is isolated; the base WEB
+  // build and ALL native app builds (APP_BUILD — already sandboxed per app) keep '' = the original
+  // un-prefixed keys, so their existing saves/uploads need no migration.
+  define: {
+    __SAVE_SCOPE__: JSON.stringify(APP_BUILD ? '' : (VARIANT ? VARIANT + '_' : '')),
+  },
   base: './',
   resolve: {
     alias: {

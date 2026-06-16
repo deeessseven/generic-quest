@@ -1,8 +1,10 @@
 import { createHero, levelUp } from './data/characters.js';
 import { ITEM_DEFS } from './data/items.js';
 import { GT } from './data/GameText.js';
+import { SAVE_SCOPE } from './saveScope.js';
 
-const SLOT_PREFIX     = 'genericQuest_save_slot_';
+// SAVE_SCOPE is '' for base-web/native (→ the original key) and '<id>_' for each web variant.
+const SLOT_PREFIX     = `genericQuest_${SAVE_SCOPE}save_slot_`;
 export const SLOT_COUNT = 10;
 
 function defaultState() {

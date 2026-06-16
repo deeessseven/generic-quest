@@ -9,9 +9,9 @@
 gameTitle = Boba Quest
 
 # ── Hero Names ───────────────────────────────────────────────────────────────
-hero1Name = David
-hero2Name = Jackie
-hero3Name = Captain Ri
+hero1Name = Bob A.
+hero2Name = Tabby Okka
+hero3Name = Earl the Grey
 
 # ── Hero Classes ─────────────────────────────────────────────────────────────
 hero1Class = Warrior
@@ -130,9 +130,9 @@ hero1weapon3 = Ultima Blade
 hero2weapon1 = Oak Staff
 hero2weapon2 = Silver Rod
 hero2weapon3 = Celestial Wand
-hero3weapon1 = Dark Chamber
-hero3weapon2 = Camera Obscura
-hero3weapon3 = Arcane Camera
+hero3weapon1 = Dark Baton
+hero3weapon2 = Mystic Stave
+hero3weapon3 = Arcane Scepter
 
 # ── Weapon Descriptions (shown in shop) ──────────────────────────────────────
 hero1weapon1Desc = Starting sword
@@ -141,16 +141,16 @@ hero1weapon3Desc = ATK +18  ·  A legend forged into everlasting steel
 hero2weapon1Desc = Starting staff
 hero2weapon2Desc = MAG +7  ·  Pure silver amplifies light
 hero2weapon3Desc = MAG +16  ·  Enchanted with ancient illumination
-hero3weapon1Desc = Starting camera
+hero3weapon1Desc = Starting baton
 hero3weapon2Desc = MAG +8  ·  Imbued with raw magic
 hero3weapon3Desc = MAG +18  ·  Channels arcane energy
 
 # ── Hero Intro Story ─────────────────────────────────────────────────────────
 # One paragraph per hero.
 # Placeholders: {hero1}/{hero2}/{hero3}=hero names, {boss1}/{boss2}/{boss3}=boss names, {town}/{dungeon}/{bootcamp}=place names, {theme1}/{theme2}/{theme3}=theme words.
-hero1Story = A battle-hardened fighter from the outer lawless provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
-hero2Story = A gifted healer trained under the Grand Purple Kow Masters. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
-hero3Story = A brilliant spellcaster who once crash landed by parachute in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
+hero1Story = A battle-hardened fighter from the outer provinces. When {boss3} began assaulting {town}, {hero1} was the first to pick up a sword. "I've fought through worse," {hero1} says with a grim smile.
+hero2Story = A gifted healer trained under the Grand Bubble Tea Masters. {hero2}'s restorative skills flow as warmly as {theme3}. {hero2} joins the quest to ensure no ally falls in the darkness that lies ahead within {dungeon}.
+hero3Story = A brilliant spellcaster who once escaped the Milk T-Bone Kennels in search of {theme1}. {hero3}'s mastery of fire, ice, thunder, and earth spells has toppled empires. Now {hero3} channels all power to fight against evil in this world.
 
 # ── Boss Intro Speeches ───────────────────────────────────────────────────────
 # Use \n for line breaks within a value.

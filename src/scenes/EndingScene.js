@@ -3,6 +3,7 @@ import { GameState } from '../GameState.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { SoundSystem } from '../audio/SoundSystem.js';
 import { GT, resolveStory } from '../data/GameText.js';
+import { fitTextWidth } from '../ui/fitText.js';
 import { variant } from '../variants/registry.js';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -195,6 +196,7 @@ export class EndingScene extends Phaser.Scene {
     const groundY = H * 0.41 - 40;
     const positions = [W * 0.22, W * 0.50, W * 0.78];
     const heroColors = [0x4488ff, 0xffee44, 0xaa44ff];
+    const plateTexts = [];
 
     GameState.party.forEach((hero, i) => {
       const tx = positions[i];
@@ -211,6 +213,7 @@ export class EndingScene extends Phaser.Scene {
       const plate = this.add.text(tx, groundY - 36, hero.name, {
         fontSize: '28px', color: '#ffeecc', fontFamily: 'serif', fontStyle: 'bold', stroke: '#000000', strokeThickness: 3
       }).setOrigin(0.5).setAlpha(0).setDepth(10);
+      plateTexts.push(plate);
       this.tweens.add({ targets: plate, alpha: 1, duration: 400, delay: i * 220 + 400 });
 
       const lvlText = this.add.text(tx, groundY - 4, `Lv. ${hero.level}`, {
@@ -223,6 +226,8 @@ export class EndingScene extends Phaser.Scene {
         this.events.once('shutdown', () => t.remove(false));
       });
     });
+    // Shrink name plates uniformly so adjacent ones (centres 28% apart) can't overlap.
+    fitTextWidth(plateTexts, W * 0.26, 28, 14);
   }
 
   // ── Fireworks salvo (hero phase) ──────────────────────────────────────────

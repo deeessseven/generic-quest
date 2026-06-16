@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GameState } from '../GameState.js';
 import { ITEM_DEFS, SHOP_STOCK } from '../data/items.js';
 import { WEAPON_DEFS, getWeaponsByChar } from '../data/weapons.js';
+import { fitTextWidth } from '../ui/fitText.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { GT } from '../data/GameText.js';
@@ -140,11 +141,13 @@ export class TownScene extends Phaser.Scene {
 
     const colW = w / 3;
     this._partyStatTexts = [];
+    const nameTexts = [];
     GameState.party.forEach((hero, i) => {
       const cx = i * colW + colW / 2;
-      this.add.text(cx, barY + 8, hero.name, {
-        fontSize: '22px', color: '#aaccff', fontFamily: 'monospace'
+      const nameTxt = this.add.text(cx, barY + 8, hero.name, {
+        fontSize: '22px', color: hero.status === 'dead' ? '#ff4444' : '#aaccff', fontFamily: 'monospace'
       }).setOrigin(0.5, 0);
+      nameTexts.push(nameTxt);
       const hpTxt = this.add.text(cx, barY + 34, `HP ${hero.hp}/${hero.maxHp}`, {
         fontSize: '20px', color: hero.hp <= hero.maxHp * 0.3 ? '#ff4444' : hero.hp <= hero.maxHp * 0.7 ? '#ffee44' : '#88dd88',
         fontFamily: 'monospace'
@@ -152,13 +155,16 @@ export class TownScene extends Phaser.Scene {
       const mpTxt = this.add.text(cx, barY + 58, `MP ${hero.mp}/${hero.maxMp}`, {
         fontSize: '20px', color: '#88aaff', fontFamily: 'monospace'
       }).setOrigin(0.5, 0);
-      this._partyStatTexts.push({ hero, hpTxt, mpTxt });
+      this._partyStatTexts.push({ hero, nameTxt, hpTxt, mpTxt });
     });
+    // Shrink names uniformly so long ones don't overlap the next column.
+    fitTextWidth(nameTexts, colW - 16, 22);
   }
 
   _refreshPartyStatus() {
     if (!this._partyStatTexts) return;
-    this._partyStatTexts.forEach(({ hero, hpTxt, mpTxt }) => {
+    this._partyStatTexts.forEach(({ hero, nameTxt, hpTxt, mpTxt }) => {
+      nameTxt.setColor(hero.status === 'dead' ? '#ff4444' : '#aaccff');
       hpTxt.setText(`HP ${hero.hp}/${hero.maxHp}`);
       hpTxt.setColor(hero.hp <= hero.maxHp * 0.3 ? '#ff4444' : hero.hp <= hero.maxHp * 0.7 ? '#ffee44' : '#88dd88');
       mpTxt.setText(`MP ${hero.mp}/${hero.maxMp}`);
@@ -193,9 +199,11 @@ export class TownScene extends Phaser.Scene {
         hdr.lineStyle(1, 0x4466aa, 1);
         hdr.lineBetween(0, rowY + 28, innerW, rowY + 28);
         container.add(hdr);
-        container.add(this.add.text(4, rowY + 4, `${hero.name}  (${heroClass})`, {
+        const hdrTxt = this.add.text(4, rowY + 4, `${hero.name}  (${heroClass})`, {
           fontSize: '24px', color: '#88aadd', fontFamily: 'serif', fontStyle: 'bold'
-        }));
+        });
+        fitTextWidth(hdrTxt, innerW - 8, 24);
+        container.add(hdrTxt);
         rowY += 34;
 
         weapons.forEach(wid => {
@@ -205,10 +213,12 @@ export class TownScene extends Phaser.Scene {
           const isFree     = w.buyPrice === 0;
           const canAfford  = GameState.gold >= w.buyPrice;
 
-          // Weapon name (line 1)
-          container.add(this.add.text(6, rowY, w.name, {
+          // Weapon name (line 1) — fit so it can't slide under the price / action button.
+          const wNameTxt = this.add.text(6, rowY, w.name, {
             fontSize: '26px', color: isEquipped ? '#ffdd88' : '#ccddff', fontFamily: 'serif'
-          }));
+          });
+          fitTextWidth(wNameTxt, innerW - 150, 26);
+          container.add(wNameTxt);
           // Description (line 2)
           container.add(this.add.text(6, rowY + 24, w.description, {
             fontSize: '18px', color: '#667799', fontFamily: 'serif'

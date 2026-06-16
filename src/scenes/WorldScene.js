@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GameState } from '../GameState.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
+import { fitTextWidth } from '../ui/fitText.js';
 import { GT, resolveStory } from '../data/GameText.js';
 import { showQuitConfirm } from '../ui/QuitConfirm.js';
 
@@ -138,6 +139,7 @@ export class WorldScene extends Phaser.Scene {
 
     const heroAreaX = 160;
     const heroColW = Math.floor((w - heroAreaX - 10) / 3);
+    const nameTexts = [];
     GameState.party.forEach((hero, i) => {
       const cx = heroAreaX + i * heroColW + heroColW / 2;
       const nameColor = hero.status === 'dead' ? '#ff6666' : '#aaccff';
@@ -148,8 +150,11 @@ export class WorldScene extends Phaser.Scene {
       const t2 = this.add.text(cx, h - 28, `${hero.hp}/${hero.maxHp}`, {
         fontSize: '14px', color: hpColor, fontFamily: 'monospace'
       }).setOrigin(0.5, 0);
+      nameTexts.push(t1);
       this.partyTexts.push(t1, t2);
     });
+    // Shrink names uniformly so long ones don't overlap the next column.
+    fitTextWidth(nameTexts, heroColW - 8, 16);
   }
 
   createLocationNode(loc, w, h) {

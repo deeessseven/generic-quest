@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GameState, SLOT_COUNT } from '../GameState.js';
+import { fitTextWidth } from '../ui/fitText.js';
 const SLOT_H     = 72;   // height of each slot row
 const HEADER_H   = 52;
 const PADDING    = 8;
@@ -93,14 +94,17 @@ export class SaveLoadScene extends Phaser.Scene {
       // Party line — split across two lines to avoid overflow
       const partyLine1 = info.party.slice(0, 2).map(p => `${p.name} Lv.${p.level}`).join('  ');
       const partyLine2 = info.party.slice(2).map(p => `${p.name} Lv.${p.level}`).join('  ');
-      this.add.text(contentX, y + 5, partyLine1, {
+      const partyTexts = [];
+      partyTexts.push(this.add.text(contentX, y + 5, partyLine1, {
         fontSize: '17px', color: '#aaccff', fontFamily: 'monospace'
-      });
+      }));
       if (partyLine2) {
-        this.add.text(contentX, y + 22, partyLine2, {
+        partyTexts.push(this.add.text(contentX, y + 22, partyLine2, {
           fontSize: '17px', color: '#aaccff', fontFamily: 'monospace'
-        });
+        }));
       }
+      // Shrink uniformly so long names don't run under the right-hand date / action column.
+      fitTextWidth(partyTexts, W - contentX - 110, 17);
       // Gold + location
       const locLabel = info.location || 'World Map';
       this.add.text(contentX, y + 41, `💰 ${info.gold}  ·  ${locLabel}`, {

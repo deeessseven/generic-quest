@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import { GameState } from '../GameState.js';
 import { getRandomEncounter } from '../data/enemies.js';
 import { ITEM_DEFS } from '../data/items.js';
+import { fitTextWidth } from '../ui/fitText.js';
 import { SoundSystem } from '../audio/SoundSystem.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
@@ -383,10 +384,12 @@ export class DungeonScene extends Phaser.Scene {
     g.lineBetween(0, by, w, by);
     const cw = w / 3;
     this._partyBarTexts = [];
+    const nameTexts = [];
     GameState.party.forEach((hero, i) => {
       const cx = i * cw + cw / 2;
       const color = hero.status === 'dead' ? '#ff4444' : '#cc88ff';
-      this.add.text(cx, by + 8, hero.name, { fontSize: '22px', color, fontFamily: 'monospace' }).setOrigin(0.5);
+      const nameTxt = this.add.text(cx, by + 8, hero.name, { fontSize: '22px', color, fontFamily: 'monospace' }).setOrigin(0.5);
+      nameTexts.push(nameTxt);
       const hpTxt = this.add.text(cx, by + 32, `HP ${hero.hp}/${hero.maxHp}`, {
         fontSize: '20px', color: hero.hp <= hero.maxHp * 0.3 ? '#ff6666' : hero.hp <= hero.maxHp * 0.7 ? '#ffee44' : '#88cc88',
         fontFamily: 'monospace'
@@ -394,13 +397,16 @@ export class DungeonScene extends Phaser.Scene {
       const mpTxt = this.add.text(cx, by + 54, `MP ${hero.mp}/${hero.maxMp}`, {
         fontSize: '20px', color: '#7788cc', fontFamily: 'monospace'
       }).setOrigin(0.5);
-      this._partyBarTexts.push({ hero, hpTxt, mpTxt });
+      this._partyBarTexts.push({ hero, nameTxt, hpTxt, mpTxt });
     });
+    // Shrink names uniformly so long ones don't overlap the next column.
+    fitTextWidth(nameTexts, cw - 16, 22);
   }
 
   refreshStatusBar() {
     if (!this._partyBarTexts) return;
-    this._partyBarTexts.forEach(({ hero, hpTxt, mpTxt }) => {
+    this._partyBarTexts.forEach(({ hero, nameTxt, hpTxt, mpTxt }) => {
+      nameTxt.setColor(hero.status === 'dead' ? '#ff4444' : '#cc88ff');
       hpTxt.setText(`HP ${hero.hp}/${hero.maxHp}`);
       hpTxt.setColor(hero.hp <= hero.maxHp * 0.3 ? '#ff6666' : hero.hp <= hero.maxHp * 0.7 ? '#ffee44' : '#88cc88');
       mpTxt.setText(`MP ${hero.mp}/${hero.maxMp}`);

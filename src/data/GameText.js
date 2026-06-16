@@ -157,6 +157,11 @@ export const GT = {
   // Boss floor tip suffix. Placeholder: {town}=town place name.
   tipBossSuffix: 'Make sure to Save Game before continuing!\nYou can also shop for items and weapons in {town} before proceeding.',
 
+  // Toggle for the Menu's "Avatars" and "Backgrounds" tabs — the UI for uploading custom images.
+  // 'true' shows both tabs (players can upload their own avatar/background images); 'false' hides
+  // them entirely. Flip this in a game's gametext.txt to easily hide/unhide custom image uploads.
+  showCustomImageTabs: 'true',
+
   // ── Celebration scenes (used by variants that add BirthdayScene/BirthdayEndScene) ──
   // Defined here so applyText() accepts these keys from a variant's gametext.txt.
   // Defaults are generic; a variant overrides them. \n = line break; {boss3}/{town}/{hero1} work.

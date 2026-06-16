@@ -58,13 +58,20 @@ export class MenuScene extends Phaser.Scene {
       fontSize: '32px', color: '#aaccff', fontFamily: 'serif'
     }).setOrigin(0.5);
 
-    // Tabs
+    // Tabs. The "Avatars" and "Backgrounds" tabs are the custom-image upload UI; gametext's
+    // showCustomImageTabs toggle hides/unhides them (set it to 'false' to hide uploads). When
+    // hidden, the remaining tabs reflow automatically (layout below divides by tabs.length).
+    const showCustomImageTabs = String(GT.showCustomImageTabs).trim() === 'true';
     const tabs = [
       { id: 'party',   label: 'Party' },
       { id: 'items',   label: 'Items' },
-      { id: 'avatars', label: 'Avatars' },
-      { id: 'bgs',     label: 'Backgrounds' }
+      ...(showCustomImageTabs ? [
+        { id: 'avatars', label: 'Avatars' },
+        { id: 'bgs',     label: 'Backgrounds' }
+      ] : [])
     ];
+    // Never leave the active tab pointing at a now-hidden tab.
+    if (!tabs.some(t => t.id === this.activeTab)) this.activeTab = 'party';
     this.tabBtns = {};
     const tabPad = 8;
     tabs.forEach((tab, i) => {

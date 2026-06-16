@@ -8,6 +8,12 @@
 # ── Game Title ───────────────────────────────────────────────────────────────
 gameTitle = Van's Bday Boba Quest
 
+# ── Custom Image Tabs ────────────────────────────────────────────────────────
+# Show/hide the Menu's "Avatars" and "Backgrounds" tabs (the custom image upload UI).
+# true = show the upload tabs, false = hide them. Flip this to easily hide/unhide
+# the uploadable custom images for avatars and backgrounds.
+showCustomImageTabs = false
+
 # ── Hero Names ───────────────────────────────────────────────────────────────
 hero1Name = Tracy
 hero2Name = Mr Meeseeks

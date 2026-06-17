@@ -108,7 +108,8 @@ export class TitleScene extends Phaser.Scene {
     const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '';
     if (appVersion) {
       this.add.text(width / 2, footer.y - footer.height / 2 - 4, `v${appVersion}`, {
-        fontSize: '13px', color: '#5a7099', fontFamily: 'monospace'
+        fontSize: '15px', color: '#aac4ee', fontFamily: 'monospace',
+        stroke: '#0a0f1a', strokeThickness: 3
       }).setOrigin(0.5, 1);
     }
 

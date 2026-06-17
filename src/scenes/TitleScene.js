@@ -101,9 +101,16 @@ export class TitleScene extends Phaser.Scene {
     }
 
     // Footer
-    this.add.text(width / 2, height - 16, `© 2026 ${resolveStory(GT.gameTitle)}`, {
+    const footer = this.add.text(width / 2, height - 16, `© 2026 ${resolveStory(GT.gameTitle)}`, {
       fontSize: '22px', color: '#88bbff', fontFamily: 'monospace'
     }).setOrigin(0.5);
+    // Small version number sitting just above the copyright (build-time __APP_VERSION__).
+    const appVersion = typeof __APP_VERSION__ !== 'undefined' ? __APP_VERSION__ : '';
+    if (appVersion) {
+      this.add.text(width / 2, footer.y - footer.height / 2 - 4, `v${appVersion}`, {
+        fontSize: '13px', color: '#5a7099', fontFamily: 'monospace'
+      }).setOrigin(0.5, 1);
+    }
 
     MusicSystem.play('title');
 

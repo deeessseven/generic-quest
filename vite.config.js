@@ -5,6 +5,10 @@ import fs from 'fs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+// Single source of truth for the app version shown on the title screen: package.json's "version".
+// Bump it there and every build — base AND variants — picks it up.
+const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf8'));
+
 // Build-time variant selection. With no VITE_VARIANT (the normal `npm run build`), this is the base
 // game: outDir 'docs', emptyOutDir true. With VITE_VARIANT=<id> (used by scripts/build-variants.mjs),
 // it builds that variant into docs/<id>/ WITHOUT emptying docs/. The '@active-variant' alias resolves
@@ -69,6 +73,8 @@ export default defineConfig({
   // un-prefixed keys, so their existing saves/uploads need no migration.
   define: {
     __SAVE_SCOPE__: JSON.stringify(APP_BUILD ? '' : (VARIANT ? VARIANT + '_' : '')),
+    // Replaced inline at build time; referenced as the global __APP_VERSION__ in app code.
+    __APP_VERSION__: JSON.stringify(pkg.version),
   },
   base: './',
   resolve: {

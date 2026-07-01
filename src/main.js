@@ -41,7 +41,10 @@ const config = {
   backgroundColor: '#000000',
   scale: {
     mode: Phaser.Scale.FIT,
-    autoCenter: Phaser.Scale.CENTER_BOTH,
+    // NO_CENTER: the CSS flexbox on <body> centers the canvas. Using Phaser's
+    // CENTER_BOTH *as well* stacked two centerings and pushed the canvas down-right
+    // (a fat top gap + a thin left bar). Let flexbox do it alone.
+    autoCenter: Phaser.Scale.NO_CENTER,
     width: 480,
     height: GAME_H,
     min: { width: 320, height: 568 },
@@ -80,4 +83,11 @@ registerBackButton(game);
 if (screen.orientation && screen.orientation.lock) {
   screen.orientation.lock('portrait').catch(() => {});
 }
-window.addEventListener('resize', () => { game.scale.refresh(); });
+// Re-fit on every viewport change. The mobile viewport (URL/nav bar showing or
+// hiding) often settles a beat AFTER load, so the very first fit can be stale —
+// re-fit a few times early so the canvas isn't stuck mis-sized until the user
+// happens to trigger a resize.
+const refit = () => game.scale.refresh();
+window.addEventListener('resize', refit);
+if (window.visualViewport) window.visualViewport.addEventListener('resize', refit);
+[60, 200, 500, 1000].forEach((t) => setTimeout(refit, t));

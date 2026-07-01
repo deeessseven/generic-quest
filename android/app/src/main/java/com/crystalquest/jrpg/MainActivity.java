@@ -2,8 +2,10 @@ package com.crystalquest.jrpg;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
 
+import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -15,6 +17,34 @@ public class MainActivity extends BridgeActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Draw edge-to-edge. On Android 15+ (targetSdk 35+) the system enforces
+        // this, and by default the WebView gets padded into the "safe area"
+        // between the status and navigation bars — which showed as black strips
+        // (a tall one at the top, a thin one at the bottom) even with the bars
+        // hidden. Setting decorFitsSystemWindows(false) + consuming the insets
+        // below makes the WebView actually fill the whole screen.
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+
+        // Extend content into the display cutout / notch area too.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            WindowManager.LayoutParams attrs = getWindow().getAttributes();
+            attrs.layoutInDisplayCutoutMode =
+                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            getWindow().setAttributes(attrs);
+        }
+
+        // Zero out the system-bar insets so the WebView is not padded away from
+        // the screen edges. Returning CONSUMED stops the insets from reaching
+        // the WebView, so Capacitor's own inset handling can't re-add padding.
+        final View content = findViewById(android.R.id.content);
+        if (content != null) {
+            ViewCompat.setOnApplyWindowInsetsListener(content, (v, insets) -> {
+                v.setPadding(0, 0, 0, 0);
+                return WindowInsetsCompat.CONSUMED;
+            });
+        }
+
         enableImmersiveMode();
     }
 
@@ -29,15 +59,6 @@ public class MainActivity extends BridgeActivity {
     }
 
     private void enableImmersiveMode() {
-        // Draw the web view behind the system bars (true edge-to-edge) and let
-        // content extend into the display cutout / notch area.
-        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            getWindow().getAttributes().layoutInDisplayCutoutMode =
-                WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
-        }
-
         WindowInsetsControllerCompat controller =
             new WindowInsetsControllerCompat(getWindow(), getWindow().getDecorView());
         // Hide both the status bar and the navigation bar for a fullscreen game.

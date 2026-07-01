@@ -15,10 +15,12 @@
     /* height:100% (not 100vh) tracks the real visible viewport, avoiding the
        mobile 100vh overshoot that pushed the canvas off-center. */
     html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
-    body { display: flex; justify-content: center; align-items: center; }
+    /* Anchor the game to the top and reserve a 14px band at the bottom (matches
+       BOTTOM_SAFE in main.js) so bottom-row UI clears the home-swipe gesture area. */
+    body { display: flex; justify-content: center; align-items: flex-start; padding-bottom: 14px; }
     canvas { display: block; }
   </style>
-  <script src="./assets/index-BkxAA0nM.js"></script>
+  <script src="./assets/index-Db-b44YS.js"></script>
 </head>
 <body>
 </body>

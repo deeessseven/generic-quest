@@ -38,7 +38,8 @@ const paeth = (a, b, c) => {
 
 // ── Decode an 8-bit, non-interlaced PNG → { width, height, rgba } ────────────
 function decodePNG(buf) {
-  let pos = 8, width = 0, height = 0, colorType = 0, interlace = 0;
+  let pos = 8, width = 0, height = 0, bitDepth = 8, colorType = 0, interlace = 0;
+  let palette = null, trns = null;
   const idat = [];
   while (pos < buf.length) {
     const len = buf.readUInt32BE(pos);
@@ -46,14 +47,19 @@ function decodePNG(buf) {
     const data = buf.subarray(pos + 8, pos + 8 + len);
     if (type === 'IHDR') {
       width = data.readUInt32BE(0); height = data.readUInt32BE(4);
-      colorType = data[9]; interlace = data[12];
-    } else if (type === 'IDAT') idat.push(data);
+      bitDepth = data[8]; colorType = data[9]; interlace = data[12];
+    } else if (type === 'PLTE') palette = Buffer.from(data);   // RGB triples, indexed by pixel value
+    else if (type === 'tRNS') trns = Buffer.from(data);        // per-palette-index alpha (colorType 3)
+    else if (type === 'IDAT') idat.push(data);
     else if (type === 'IEND') break;
     pos += 12 + len;
   }
   if (interlace) throw new Error('interlaced PNG not supported');
-  const channels = colorType === 6 ? 4 : colorType === 2 ? 3 : colorType === 0 ? 1 : colorType === 4 ? 2 : 0;
+  if (bitDepth !== 8) throw new Error('unsupported bit depth ' + bitDepth); // decoder assumes 8-bit samples
+  // Palette (colorType 3) stores one index byte per pixel; RGBA is looked up from PLTE/tRNS below.
+  const channels = colorType === 6 ? 4 : colorType === 2 ? 3 : colorType === 0 ? 1 : colorType === 4 ? 2 : colorType === 3 ? 1 : 0;
   if (!channels) throw new Error('unsupported colorType ' + colorType);
+  if (colorType === 3 && !palette) throw new Error('palette PNG missing PLTE chunk');
   const raw = zlib.inflateSync(Buffer.concat(idat));
   const stride = width * channels;
   const px = Buffer.alloc(height * stride);
@@ -84,6 +90,7 @@ function decodePNG(buf) {
     let r, g, b, a = 255;
     if (colorType === 6) { r = px[s]; g = px[s + 1]; b = px[s + 2]; a = px[s + 3]; }
     else if (colorType === 2) { r = px[s]; g = px[s + 1]; b = px[s + 2]; }
+    else if (colorType === 3) { const idx = px[s]; r = palette[idx * 3]; g = palette[idx * 3 + 1]; b = palette[idx * 3 + 2]; a = trns && idx < trns.length ? trns[idx] : 255; }
     else { r = g = b = px[s]; if (colorType === 4) a = px[s + 1]; }
     const d = i * 4;
     rgba[d] = r; rgba[d + 1] = g; rgba[d + 2] = b; rgba[d + 3] = a;

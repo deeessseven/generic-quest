@@ -12,48 +12,14 @@
   <title>Generic Quest</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    /* TEMP DIAGNOSTIC COLORS — html=cyan, body=magenta. Reverts to black after we
-       learn which layer the black bars belong to. */
-    html { background: #00ffff; }
-    body {
-      background: #ff00ff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
-    }
+    /* height:100% (not 100vh) tracks the real visible viewport, avoiding the
+       mobile 100vh overshoot that pushed the canvas off-center. */
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; }
+    body { display: flex; justify-content: center; align-items: center; }
     canvas { display: block; }
-    #dbg { position: fixed; top: 40%; left: 4px; z-index: 99999; background: rgba(0,0,0,.8);
-      color: #0f0; font: 12px monospace; padding: 5px; pointer-events: none; white-space: pre; }
   </style>
-  <script src="./assets/index-BdJEQZuD.js"></script>
+  <script src="./assets/index-DuO_Etx_.js"></script>
 </head>
 <body>
-  <div id="dbg">measuring…</div>
-  <script>
-    function safeInset(side) {
-      const d = document.createElement('div');
-      d.style.cssText = 'position:fixed;left:0;' + side + ':0;height:env(safe-area-inset-' + side + ');width:1px;';
-      document.body.appendChild(d);
-      const h = Math.round(d.getBoundingClientRect().height);
-      d.remove();
-      return h;
-    }
-    function upd() {
-      const c = document.querySelector('canvas');
-      const r = c ? c.getBoundingClientRect() : null;
-      document.getElementById('dbg').textContent =
-        'win ' + innerWidth + 'x' + innerHeight + ' dpr' + (window.devicePixelRatio || 1) + '\n' +
-        'scr ' + screen.width + 'x' + screen.height + '\n' +
-        'vv  ' + (visualViewport ? Math.round(visualViewport.width) + 'x' + Math.round(visualViewport.height) : '-') + '\n' +
-        'cvs ' + (c ? c.width + 'x' + c.height : 'none') + '\n' +
-        'rect ' + (r ? Math.round(r.width) + 'x' + Math.round(r.height) + ' @' + Math.round(r.left) + ',' + Math.round(r.top) : '-') + '\n' +
-        'safe T' + safeInset('top') + ' B' + safeInset('bottom');
-    }
-    addEventListener('load', () => { setTimeout(upd, 600); setInterval(upd, 1000); });
-    addEventListener('resize', upd);
-  </script>
 </body>
 </html>

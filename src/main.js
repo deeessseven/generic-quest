@@ -26,6 +26,16 @@ GameState.init();
 // it can be resumed on gesture/return. No-op on Android/desktop. See iosAudioUnmute.js.
 enableIOSAudioThroughMuteSwitch(() => MusicSystem._ctx || null);
 
+// Match the game's aspect ratio to the device so Phaser FIT fills the screen with no
+// letterbox — WITHOUT cropping. We keep the 480-wide design (every horizontal position
+// and edge button stays exactly where it was) and only stretch the HEIGHT to the device
+// aspect. Clamped to [854, 1120] so ultra-tall phones don't leave huge vertical gaps and
+// wide screens (tablets) never squeeze the vertical layout below its 854 design height.
+const BASE_W = 480, DESIGN_H = 854;
+const _vw = window.innerWidth  || BASE_W;
+const _vh = window.innerHeight || DESIGN_H;
+const GAME_H = Math.min(1120, Math.max(DESIGN_H, Math.round(BASE_W * _vh / _vw)));
+
 const config = {
   type: Phaser.AUTO,
   backgroundColor: '#000000',
@@ -33,7 +43,7 @@ const config = {
     mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 480,
-    height: 854,
+    height: GAME_H,
     min: { width: 320, height: 568 },
     max: { width: 1080, height: 1920 }
   },

@@ -1,6 +1,6 @@
 {
   "name": "generic-quest",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Generic Quest - A themeable turn-based JRPG",
   "scripts": {
     "dev": "vite",

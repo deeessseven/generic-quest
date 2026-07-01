@@ -25,9 +25,35 @@
       overflow: hidden;
     }
     canvas { display: block; }
+    #dbg { position: fixed; top: 40%; left: 4px; z-index: 99999; background: rgba(0,0,0,.8);
+      color: #0f0; font: 12px monospace; padding: 5px; pointer-events: none; white-space: pre; }
   </style>
-  <script src="./assets/index-CuIxytdW.js"></script>
+  <script src="./assets/index-DJwmCSIo.js"></script>
 </head>
 <body>
+  <div id="dbg">measuring…</div>
+  <script>
+    function safeInset(side) {
+      const d = document.createElement('div');
+      d.style.cssText = 'position:fixed;left:0;' + side + ':0;height:env(safe-area-inset-' + side + ');width:1px;';
+      document.body.appendChild(d);
+      const h = Math.round(d.getBoundingClientRect().height);
+      d.remove();
+      return h;
+    }
+    function upd() {
+      const c = document.querySelector('canvas');
+      const r = c ? c.getBoundingClientRect() : null;
+      document.getElementById('dbg').textContent =
+        'win ' + innerWidth + 'x' + innerHeight + ' dpr' + (window.devicePixelRatio || 1) + '\n' +
+        'scr ' + screen.width + 'x' + screen.height + '\n' +
+        'vv  ' + (visualViewport ? Math.round(visualViewport.width) + 'x' + Math.round(visualViewport.height) : '-') + '\n' +
+        'cvs ' + (c ? c.width + 'x' + c.height : 'none') + '\n' +
+        'rect ' + (r ? Math.round(r.width) + 'x' + Math.round(r.height) + ' @' + Math.round(r.left) + ',' + Math.round(r.top) : '-') + '\n' +
+        'safe T' + safeInset('top') + ' B' + safeInset('bottom');
+    }
+    addEventListener('load', () => { setTimeout(upd, 600); setInterval(upd, 1000); });
+    addEventListener('resize', upd);
+  </script>
 </body>
 </html>

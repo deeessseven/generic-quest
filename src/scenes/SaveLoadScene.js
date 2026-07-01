@@ -13,6 +13,9 @@ export class SaveLoadScene extends Phaser.Scene {
     this.returnScene = data.returnScene || 'TitleScene';
   }
 
+  // Android Back → same as the on-screen Back button (return to caller).
+  handleBackButton() { this.scene.start(this.returnScene, {}); }
+
   create() {
     const { width, height } = this.scale;
     const W = width;

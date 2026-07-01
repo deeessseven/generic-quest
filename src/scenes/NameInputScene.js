@@ -6,6 +6,9 @@ const BOX_COLORS = [0x4488ff, 0xffee44, 0xaa44ff];
 export class NameInputScene extends Phaser.Scene {
   constructor() { super('NameInputScene'); }
 
+  // Android Back → same as the on-screen Back button (return to title).
+  handleBackButton() { this.scene.start('TitleScene', { showDifficulty: true }); }
+
   create() {
     const { width, height } = this.scale;
     this.W = width;

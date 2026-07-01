@@ -32,6 +32,10 @@ function getLocations() {
 export class WorldScene extends Phaser.Scene {
   constructor() { super('WorldScene'); }
 
+  // Android Back during map exploration → open the menu (MenuScene's own
+  // handler closes it again, so Back toggles the menu).
+  handleBackButton() { this.scene.launch('MenuScene', { returnScene: 'WorldScene' }); }
+
   create() {
     const { width, height } = this.scale;
 

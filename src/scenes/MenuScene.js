@@ -30,6 +30,9 @@ const ITEM_DISPLAY_ORDER = ['potion', 'hiPotion', 'ether', 'revivalDrop', 'antid
 export class MenuScene extends Phaser.Scene {
   constructor() { super('MenuScene'); }
 
+  // Android Back closes the menu (same as the ✕ button).
+  handleBackButton() { this.scene.stop('MenuScene'); }
+
   init(data) {
     this.returnScene = data.returnScene || 'WorldScene';
     this.activeTab = 'party';

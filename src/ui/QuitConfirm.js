@@ -1,9 +1,17 @@
+import { pushBackModal, popBackModal } from './backHandler.js';
+
 /**
- * showQuitConfirm — reusable quit-to-title dialog.
+ * showQuitConfirm — reusable confirm dialog (defaults to quit-to-title).
  * @param {Phaser.Scene} scene    The scene to add the dialog to.
- * @param {Function}     onQuit   Called (after the fade) when the player confirms quit.
+ * @param {Function}     onQuit   Called (after the fade) when the player confirms.
+ * @param {Object}       [opts]   { message, sub, confirmLabel } to reuse the dialog
+ *                                for other confirms (e.g. exit-app from the title).
  */
-export function showQuitConfirm(scene, onQuit) {
+export function showQuitConfirm(scene, onQuit, opts = {}) {
+  const message      = opts.message      || 'Quit to title screen?';
+  const subText      = opts.sub !== undefined ? opts.sub : 'Unsaved progress will be lost.';
+  const confirmLabel = opts.confirmLabel || 'Quit';
+
   const { width, height } = scene.scale;
   const boxW = width - 60, boxH = 180, boxX = 30, boxY = height / 2 - boxH / 2;
 
@@ -18,11 +26,11 @@ export function showQuitConfirm(scene, onQuit) {
   box.lineStyle(2, 0x4488cc, 1);
   box.strokeRoundedRect(boxX, boxY, boxW, boxH, 10);
 
-  const msg = scene.add.text(width / 2, boxY + 44, 'Quit to title screen?', {
+  const msg = scene.add.text(width / 2, boxY + 44, message, {
     fontSize: '30px', color: '#ccddff', fontFamily: 'serif'
   }).setOrigin(0.5).setDepth(32);
 
-  const sub = scene.add.text(width / 2, boxY + 82, 'Unsaved progress will be lost.', {
+  const sub = scene.add.text(width / 2, boxY + 82, subText, {
     fontSize: '22px', color: '#778899', fontFamily: 'serif', fontStyle: 'italic'
   }).setOrigin(0.5).setDepth(32);
 
@@ -34,10 +42,13 @@ export function showQuitConfirm(scene, onQuit) {
 
   let noBg, noLbl, noHit, yesBg, yesLbl, yesHit;
   const destroy = () => {
+    popBackModal(scene, destroy);
     overlay.destroy(); box.destroy(); msg.destroy(); sub.destroy();
     noBg.destroy(); noLbl.destroy(); noHit.destroy();
     yesBg.destroy(); yesLbl.destroy(); yesHit.destroy();
   };
+  // Android Back cancels the dialog (same as tapping Cancel).
+  pushBackModal(scene, destroy);
 
   noBg  = scene.add.graphics().setDepth(32);
   noLbl = scene.add.text(noX + noW / 2, btnY, 'Cancel', {
@@ -58,7 +69,7 @@ export function showQuitConfirm(scene, onQuit) {
   noHit.on('pointerdown',  () => destroy());
 
   yesBg  = scene.add.graphics().setDepth(32);
-  yesLbl = scene.add.text(yesX + yesW / 2, btnY, 'Quit', {
+  yesLbl = scene.add.text(yesX + yesW / 2, btnY, confirmLabel, {
     fontSize: '28px', color: '#ffaaaa', fontFamily: 'serif'
   }).setOrigin(0.5).setDepth(33);
   const drawYes = (hover) => {

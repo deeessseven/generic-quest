@@ -4,6 +4,9 @@ import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { GT, resolveStory } from '../data/GameText.js';
 import { variant } from '../variants/registry.js';
+import { App } from '@capacitor/app';
+import { showQuitConfirm } from '../ui/QuitConfirm.js';
+import { pushBackModal, popBackModal } from '../ui/backHandler.js';
 
 export class TitleScene extends Phaser.Scene {
   constructor() { super('TitleScene'); }
@@ -122,6 +125,15 @@ export class TitleScene extends Phaser.Scene {
     if (this.scene.settings.data?.showDifficulty) this.showDifficultyMenu();
   }
 
+  // Android Back on the title screen (top level) → confirm, then exit the app.
+  handleBackButton() {
+    showQuitConfirm(this, () => App.exitApp(), {
+      message: `Quit ${resolveStory(GT.gameTitle)}?`,
+      sub: '',
+      confirmLabel: 'Quit'
+    });
+  }
+
   createMenuButton(x, y, label, callback) {
     const btn = this.add.graphics();
     btn.fillStyle(0x112244, 0.9);
@@ -180,6 +192,9 @@ export class TitleScene extends Phaser.Scene {
   showDifficultyMenu() {
     const { width, height } = this.scale;
     const menuItems = [];
+    // Android Back closes the difficulty panel instead of exiting the app.
+    const closeMenu = () => { menuItems.forEach(o => o.destroy()); popBackModal(this, closeMenu); };
+    pushBackModal(this, closeMenu);
 
     // Dim overlay
     const overlay = this.add.rectangle(width / 2, height / 2, width, height, 0x000011, 1).setDepth(10);
@@ -244,7 +259,7 @@ export class TitleScene extends Phaser.Scene {
     backBg.setInteractive(new Phaser.Geom.Rectangle(px - 80, backY - 22, 160, 44), Phaser.Geom.Rectangle.Contains);
     backBg.on('pointerover',  () => { drawBack(true);  backTxt.setColor('#ffffff'); });
     backBg.on('pointerout',   () => { drawBack(false); backTxt.setColor('#99bbdd'); });
-    backBg.on('pointerdown',  () => this.scene.start('TitleScene', {}));
+    backBg.on('pointerdown',  () => closeMenu());
     menuItems.push(backBg, backTxt);
 
     // Block taps from passing through to title buttons below

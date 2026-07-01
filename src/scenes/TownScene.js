@@ -12,6 +12,9 @@ const INN_COST = 60;
 export class TownScene extends Phaser.Scene {
   constructor() { super('TownScene'); }
 
+  // Android Back in town → open the menu (toggles with MenuScene's handler).
+  handleBackButton() { this.scene.launch('MenuScene', { returnScene: 'TownScene' }); }
+
   create() {
     MusicSystem.play('town');
     const { width, height } = this.scale;

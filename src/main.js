@@ -15,6 +15,7 @@ import { variant }      from './variants/registry.js';
 import { GameState }    from './GameState.js';
 import { MusicSystem }  from './audio/MusicSystem.js';
 import { enableIOSAudioThroughMuteSwitch } from './iosAudioUnmute.js';
+import { registerBackButton } from './ui/backHandler.js';
 import './registerSW.js';
 
 // Initialize game state on load
@@ -61,6 +62,9 @@ const config = {
 };
 
 const game = new Phaser.Game(config);
+
+// Android hardware Back button → context-sensitive handling (see ui/backHandler.js)
+registerBackButton(game);
 
 // Lock to portrait so tilting to landscape and back doesn't resize the game
 if (screen.orientation && screen.orientation.lock) {

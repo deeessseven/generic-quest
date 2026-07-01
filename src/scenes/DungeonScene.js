@@ -31,6 +31,9 @@ const ENCOUNTER_CHANCE = 0.30; // per room
 export class DungeonScene extends Phaser.Scene {
   constructor() { super('DungeonScene'); }
 
+  // Android Back in a dungeon → open the menu (toggles with MenuScene's handler).
+  handleBackButton() { this.scene.launch('MenuScene', { returnScene: 'DungeonScene' }); }
+
   create() {
     this.FLOORS = getFloors();
     this.floor = GameState._dungeonReturnFloor !== undefined ? GameState._dungeonReturnFloor : 0;

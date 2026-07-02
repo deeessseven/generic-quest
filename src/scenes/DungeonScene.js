@@ -7,6 +7,7 @@ import { SoundSystem } from '../audio/SoundSystem.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { levelUp } from '../data/characters.js';
+import { openPause } from '../ui/backHandler.js';
 import { GT, resolveStory } from '../data/GameText.js';
 
 function getFloors() {
@@ -31,8 +32,8 @@ const ENCOUNTER_CHANCE = 0.30; // per room
 export class DungeonScene extends Phaser.Scene {
   constructor() { super('DungeonScene'); }
 
-  // Android Back in a dungeon → open the menu (toggles with MenuScene's handler).
-  handleBackButton() { this.scene.launch('MenuScene', { returnScene: 'DungeonScene' }); }
+  // Android Back in a dungeon → Game Paused overlay (Resume / Quit).
+  handleBackButton() { openPause(this); }
 
   create() {
     this.FLOORS = getFloors();

@@ -5,6 +5,7 @@ import { BackgroundStore } from '../data/BackgroundStore.js';
 import { fitTextWidth } from '../ui/fitText.js';
 import { GT, resolveStory } from '../data/GameText.js';
 import { showQuitConfirm } from '../ui/QuitConfirm.js';
+import { openPause } from '../ui/backHandler.js';
 
 function getLocations() {
   return [
@@ -32,9 +33,8 @@ function getLocations() {
 export class WorldScene extends Phaser.Scene {
   constructor() { super('WorldScene'); }
 
-  // Android Back during map exploration → open the menu (MenuScene's own
-  // handler closes it again, so Back toggles the menu).
-  handleBackButton() { this.scene.launch('MenuScene', { returnScene: 'WorldScene' }); }
+  // Android Back during map exploration → Game Paused overlay (Resume / Quit).
+  handleBackButton() { openPause(this); }
 
   create() {
     const { width, height } = this.scale;

@@ -440,6 +440,7 @@ export const MusicSystem = {
   _voiceNextTimes: [],
   _volume: 0.175,
   _muted: false,
+  _paused: false,          // manual pause (Game Paused screen) — behaves like document.hidden
   _visibilityListenerAdded: false,
   _currentTrack: null,
 
@@ -462,7 +463,7 @@ export const MusicSystem = {
           if (this._ctx) this._ctx.suspend().catch(() => {});
         };
         const resume = () => {
-          if (!this._ctx || document.hidden) return;
+          if (!this._ctx || document.hidden || this._paused) return;
           this._ctx.resume().catch(() => {});
           if (this._currentTrack) {
             const now = this._ctx.currentTime;
@@ -479,14 +480,14 @@ export const MusicSystem = {
         window.addEventListener('pageshow', resume);
         // Re-suspend if the AudioContext auto-resumes while the screen is still locked
         this._ctx.addEventListener('statechange', () => {
-          if (this._ctx && this._ctx.state === 'running' && document.hidden) {
+          if (this._ctx && this._ctx.state === 'running' && (document.hidden || this._paused)) {
             clearTimeout(this._scheduleTimer);
             this._ctx.suspend().catch(() => {});
           }
         });
       }
     }
-    if (this._ctx.state === 'suspended' && !document.hidden) this._ctx.resume().catch(() => {});
+    if (this._ctx.state === 'suspended' && !document.hidden && !this._paused) this._ctx.resume().catch(() => {});
     return this._ctx;
   },
 
@@ -534,6 +535,26 @@ export const MusicSystem = {
   },
 
   forcePlay(trackId) { this._currentTrackId = null; this.play(trackId); },
+
+  // Manual pause/resume for the Game Paused screen. Suspends the shared AudioContext
+  // (so SFX stop too) and halts the music scheduler; the _paused flag prevents the
+  // usual focus/visibility handlers from auto-resuming it while the game is paused.
+  pause() {
+    this._paused = true;
+    clearTimeout(this._scheduleTimer);
+    if (this._ctx && this._ctx.state === 'running') this._ctx.suspend().catch(() => {});
+  },
+
+  resume() {
+    this._paused = false;
+    if (!this._ctx || document.hidden) return;
+    this._ctx.resume().catch(() => {});
+    if (this._currentTrack) {
+      const now = this._ctx.currentTime;
+      this._voiceNextTimes = this._voiceNextTimes.map((t) => Math.max(t, now + 0.05));
+      this._tick(this._currentTrack, this._sessionId);
+    }
+  },
 
   getMuted() { return this._muted; },
 

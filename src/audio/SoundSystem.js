@@ -33,7 +33,7 @@ export const SoundSystem = {
   },
 
   play(id) {
-    if (this._sfxMuted || document.hidden) return;
+    if (this._sfxMuted || document.hidden || MusicSystem._paused) return;
     const fn = this[`_${id}`];
     if (fn) fn.call(this);
   },

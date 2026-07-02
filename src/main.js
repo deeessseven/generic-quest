@@ -11,6 +11,7 @@ import { SaveLoadScene }  from './scenes/SaveLoadScene.js';
 import { NameInputScene }  from './scenes/NameInputScene.js';
 import { HeroIntroScene }  from './scenes/HeroIntroScene.js';
 import { BootcampScene }  from './scenes/BootcampScene.js';
+import { PauseScene }     from './scenes/PauseScene.js';
 import { variant }      from './variants/registry.js';
 import { GameState }    from './GameState.js';
 import { MusicSystem }  from './audio/MusicSystem.js';
@@ -35,7 +36,7 @@ const BASE_W = 480, DESIGN_H = 854;
 // Reserve a small band at the very bottom so the menu's bottom-row buttons / version
 // text clear Android's home-swipe gesture area. Must match body's padding-bottom in
 // index.html so the canvas fills the remaining area with no side/top letterbox.
-const BOTTOM_SAFE = 14;
+const BOTTOM_SAFE = 10;
 const _vw = window.innerWidth  || BASE_W;
 const _vh = (window.innerHeight || DESIGN_H) - BOTTOM_SAFE;
 const GAME_H = Math.min(1120, Math.max(DESIGN_H, Math.round(BASE_W * _vh / _vw)));
@@ -67,6 +68,7 @@ const config = {
     NameInputScene,
     HeroIntroScene,
     BootcampScene,
+    PauseScene,
     ...variant.scenes
   ],
   input: {

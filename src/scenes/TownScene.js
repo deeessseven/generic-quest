@@ -6,14 +6,15 @@ import { fitTextWidth } from '../ui/fitText.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { GT } from '../data/GameText.js';
+import { openPause } from '../ui/backHandler.js';
 
 const INN_COST = 60;
 
 export class TownScene extends Phaser.Scene {
   constructor() { super('TownScene'); }
 
-  // Android Back in town → open the menu (toggles with MenuScene's handler).
-  handleBackButton() { this.scene.launch('MenuScene', { returnScene: 'TownScene' }); }
+  // Android Back in town → Game Paused overlay (Resume / Quit).
+  handleBackButton() { openPause(this); }
 
   create() {
     MusicSystem.play('town');

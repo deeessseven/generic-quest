@@ -8,6 +8,7 @@ import { levelUp } from '../data/characters.js';
 import { GT, resolveStory } from '../data/GameText.js';
 import { animateHero as _animateHero } from '../ui/BattleAnimations.js';
 import { spellFX } from '../ui/spellFX.js';
+import { openPause } from '../ui/backHandler.js';
 
 const STATE = { INTRO: 'intro', PLAYER_TURN: 'player', ENEMY_TURN: 'enemy', WIN: 'win', LOSE: 'lose', ANIM: 'anim' };
 
@@ -15,69 +16,9 @@ const STATE = { INTRO: 'intro', PLAYER_TURN: 'player', ENEMY_TURN: 'enemy', WIN:
 export class BattleScene extends Phaser.Scene {
   constructor() { super('BattleScene'); }
 
-  // Android Back in battle → toggle a pause overlay. Back again (or the Resume
-  // button) unpauses. Called by the global back handler (ui/backHandler.js).
-  handleBackButton() {
-    if (this._pauseLayer) this._resumeBattle();
-    else this._pauseBattle();
-  }
-
-  _pauseBattle() {
-    if (this._pauseLayer) return;
-    // Freeze battle animations and any queued turn timers.
-    this.tweens.pauseAll();
-    this.time.paused = true;
-
-    const { width, height } = this.scale;
-    const layer = this.add.container(0, 0).setDepth(500);
-
-    // Full-screen dim that also swallows taps so battle buttons stay inert.
-    const overlay = this.add.graphics();
-    overlay.fillStyle(0x000000, 0.6);
-    overlay.fillRect(0, 0, width, height);
-    overlay.setInteractive(new Phaser.Geom.Rectangle(0, 0, width, height), Phaser.Geom.Rectangle.Contains);
-
-    const boxW = width - 80, boxH = 200, boxX = 40, boxY = height / 2 - boxH / 2;
-    const box = this.add.graphics();
-    box.fillStyle(0x0a0a22, 0.98);
-    box.fillRoundedRect(boxX, boxY, boxW, boxH, 12);
-    box.lineStyle(2, 0x4488cc, 1);
-    box.strokeRoundedRect(boxX, boxY, boxW, boxH, 12);
-
-    const title = this.add.text(width / 2, boxY + 58, 'Game Paused', {
-      fontSize: '40px', color: '#ccddff', fontFamily: 'serif'
-    }).setOrigin(0.5);
-
-    const bW = boxW - 80, bH = 56, bX = width / 2 - bW / 2, bY = boxY + boxH - 54;
-    const btn = this.add.graphics();
-    const drawBtn = (hover) => {
-      btn.clear();
-      btn.fillStyle(hover ? 0x224488 : 0x112244, 1);
-      btn.fillRoundedRect(bX, bY - bH / 2, bW, bH, 8);
-      btn.lineStyle(2, hover ? 0x88ccff : 0x4488cc, 1);
-      btn.strokeRoundedRect(bX, bY - bH / 2, bW, bH, 8);
-    };
-    drawBtn(false);
-    const btnTxt = this.add.text(width / 2, bY, 'Resume', {
-      fontSize: '32px', color: '#aaddff', fontFamily: 'serif'
-    }).setOrigin(0.5);
-    const hit = this.add.rectangle(width / 2, bY, bW, bH)
-      .setOrigin(0.5).setInteractive({ useHandCursor: true });
-    hit.on('pointerover', () => { drawBtn(true);  btnTxt.setColor('#ffffff'); });
-    hit.on('pointerout',  () => { drawBtn(false); btnTxt.setColor('#aaddff'); });
-    hit.on('pointerdown', () => this._resumeBattle());
-
-    layer.add([overlay, box, title, btn, btnTxt, hit]);
-    this._pauseLayer = layer;
-  }
-
-  _resumeBattle() {
-    if (!this._pauseLayer) return;
-    this._pauseLayer.destroy(true);
-    this._pauseLayer = null;
-    this.tweens.resumeAll();
-    this.time.paused = false;
-  }
+  // Android Back in battle → the shared Game Paused overlay (freezes the scene +
+  // audio, offers Resume / Quit). See ui/backHandler.js + scenes/PauseScene.js.
+  handleBackButton() { openPause(this); }
 
   init(data) {
     this.enemies      = data.enemies || [];

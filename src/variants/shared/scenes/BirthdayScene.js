@@ -149,9 +149,9 @@ export class BirthdayScene extends Phaser.Scene {
     }).setOrigin(0.5).setAlpha(0.8);
     this.tweens.add({ targets: prompt, alpha: 0.2, yoyo: true, repeat: -1, duration: 1100, ease: 'Sine.easeInOut' });
 
-    // ── Tap anywhere → TitleScene (opens difficulty menu) ─────────────────
+    // ── Tap anywhere → difficulty select ──────────────────────────────────
     this.input.once('pointerdown', () => {
-      this.scene.start('TitleScene', { showDifficulty: true });
+      this.scene.start('DifficultyScene');
     });
   }
 }

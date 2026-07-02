@@ -6,8 +6,8 @@ const BOX_COLORS = [0x4488ff, 0xffee44, 0xaa44ff];
 export class NameInputScene extends Phaser.Scene {
   constructor() { super('NameInputScene'); }
 
-  // Android Back → same as the on-screen Back button (return to title).
-  handleBackButton() { this.scene.start('TitleScene', { showDifficulty: true }); }
+  // Android Back → same as the on-screen Back button (return to difficulty select).
+  handleBackButton() { this.scene.start('DifficultyScene'); }
 
   create() {
     const { width, height } = this.scale;
@@ -130,7 +130,7 @@ export class NameInputScene extends Phaser.Scene {
 
     // ── Back button ──────────────────────────────────────────────────
     this._drawBtn(width / 2 - 105, btnY + 150, 210, 47, '◀ Back', () => {
-      this.scene.start('TitleScene', { showDifficulty: true });
+      this.scene.start('DifficultyScene');
     }, '27px');
   }
 

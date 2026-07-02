@@ -9,6 +9,7 @@ import { MenuScene }      from './scenes/MenuScene.js';
 import { EndingScene }    from './scenes/EndingScene.js';
 import { SaveLoadScene }  from './scenes/SaveLoadScene.js';
 import { NameInputScene }  from './scenes/NameInputScene.js';
+import { DifficultyScene }  from './scenes/DifficultyScene.js';
 import { HeroIntroScene }  from './scenes/HeroIntroScene.js';
 import { BootcampScene }  from './scenes/BootcampScene.js';
 import { PauseScene }     from './scenes/PauseScene.js';
@@ -66,6 +67,7 @@ const config = {
     EndingScene,
     SaveLoadScene,
     NameInputScene,
+    DifficultyScene,
     HeroIntroScene,
     BootcampScene,
     PauseScene,

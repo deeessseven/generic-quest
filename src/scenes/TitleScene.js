@@ -86,13 +86,6 @@ export class TitleScene extends Phaser.Scene {
       if (t2.width > maxTitleW) t2.setScale(maxTitleW / t2.width);
     }
 
-    this.add.text(width / 2, height * 0.53 + 150, `~ ${resolveStory(GT.gameTitle)} ~`, {
-      fontFamily: 'serif',
-      fontSize: '28px',
-      color: '#8899bb',
-      fontStyle: 'italic'
-    }).setOrigin(0.5);
-
     // Menu buttons
     const menuY = height * 0.65 + 70;
     const hasSave = GameState.hasSave();

@@ -50,7 +50,10 @@ function dispatchBack(game) {
     return;
   }
 
-  if (typeof scene.handleBackButton === 'function') scene.handleBackButton();
+  if (typeof scene.handleBackButton === 'function') {
+    try { scene.handleBackButton(); } catch (e) { /* never let a handler error escape */ }
+  }
+  // Scenes with no handler (e.g. cutscenes) intentionally ignore Back.
 }
 
 export function registerBackButton(game) {
@@ -59,11 +62,13 @@ export function registerBackButton(game) {
     App.addListener('backButton', () => dispatchBack(game));
   } else {
     // Web / PWA: keep one dummy history entry to pop so the Back gesture fires
-    // popstate (instead of leaving the game), then re-arm it each time.
+    // popstate instead of leaving the game. Re-arm the trap FIRST (before dispatch)
+    // so a Back press can never escape the app even if dispatch does nothing or
+    // throws — which was letting a second Back tap exit during cutscenes.
     history.pushState(null, '', location.href);
     window.addEventListener('popstate', () => {
-      dispatchBack(game);
       history.pushState(null, '', location.href);
+      dispatchBack(game);
     });
   }
 }

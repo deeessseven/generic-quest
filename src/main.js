@@ -42,8 +42,15 @@ const BASE_W = 480, DESIGN_H = 854;
 const IS_NATIVE_APP = !!window.Capacitor;
 const TOP_SAFE = IS_NATIVE_APP ? 20 : 0;
 const BOTTOM_SAFE = IS_NATIVE_APP ? 20 : 10;
-document.body.style.paddingTop = TOP_SAFE + 'px';
-document.body.style.paddingBottom = BOTTOM_SAFE + 'px';
+// The production bundle is a plain <script> in <head>, so document.body doesn't
+// exist yet at module-eval time — defer the style write until the DOM is ready.
+// (Phaser itself already waits for DOM ready before creating the canvas.)
+const applyBands = () => {
+  document.body.style.paddingTop = TOP_SAFE + 'px';
+  document.body.style.paddingBottom = BOTTOM_SAFE + 'px';
+};
+if (document.body) applyBands();
+else document.addEventListener('DOMContentLoaded', applyBands);
 const _vw = window.innerWidth  || BASE_W;
 const _vh = (window.innerHeight || DESIGN_H) - TOP_SAFE - BOTTOM_SAFE;
 const GAME_H = Math.min(1120, Math.max(DESIGN_H, Math.round(BASE_W * _vh / _vw)));

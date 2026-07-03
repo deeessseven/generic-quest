@@ -35,9 +35,15 @@ enableIOSAudioThroughMuteSwitch(() => MusicSystem._ctx || null);
 // wide screens (tablets) never squeeze the vertical layout below its 854 design height.
 const BASE_W = 480, DESIGN_H = 854;
 // Reserve a band at the top (status bar / camera cutout) and bottom (home-swipe
-// gesture area). Must match body's padding-top/padding-bottom in index.html so the
-// canvas fills the remaining area with no side letterbox.
-const TOP_SAFE = 20, BOTTOM_SAFE = 20;
+// gesture area). The native app needs both (its webview draws edge-to-edge under the
+// system bars); the web/PWA browser already keeps the page clear of the status bar,
+// so it only gets the small bottom band. Applied as body padding here at runtime —
+// index.html ships none — so the canvas fills the remaining area with no letterbox.
+const IS_NATIVE_APP = !!window.Capacitor;
+const TOP_SAFE = IS_NATIVE_APP ? 20 : 0;
+const BOTTOM_SAFE = IS_NATIVE_APP ? 20 : 10;
+document.body.style.paddingTop = TOP_SAFE + 'px';
+document.body.style.paddingBottom = BOTTOM_SAFE + 'px';
 const _vw = window.innerWidth  || BASE_W;
 const _vh = (window.innerHeight || DESIGN_H) - TOP_SAFE - BOTTOM_SAFE;
 const GAME_H = Math.min(1120, Math.max(DESIGN_H, Math.round(BASE_W * _vh / _vw)));

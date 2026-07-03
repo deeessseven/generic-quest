@@ -77,14 +77,33 @@ export class MenuScene extends Phaser.Scene {
     if (!tabs.some(t => t.id === this.activeTab)) this.activeTab = 'party';
     this.tabBtns = {};
     const tabPad = 8;
+    const colW = (width - tabPad * 2) / tabs.length;
+    // Width capped so 2-tab layouts don't produce huge pills that collide with the
+    // MENU heading; pillY sits below the QUIT button (y 3–31).
+    const pillW = Math.min(colW - 8, 150), pillH = 28, pillY = 32, pillR = 14;
     tabs.forEach((tab, i) => {
-      const x = tabPad + (i + 0.5) * ((width - tabPad * 2) / tabs.length);
-      const btn = this.add.text(x, 32, tab.label, {
-        fontSize: '19px', fontFamily: 'serif',
-        color: this.activeTab === tab.id ? '#ffffff' : '#556699'
-      }).setOrigin(0.5, 0).setInteractive({ useHandCursor: true });
-      btn.on('pointerdown', () => this.switchTab(tab.id));
-      this.tabBtns[tab.id] = btn;
+      const cx = tabPad + (i + 0.5) * colW;
+      const bg = this.add.graphics();
+      const txt = this.add.text(cx, pillY + pillH / 2, tab.label, {
+        fontSize: '19px', fontFamily: 'serif', color: '#ffffff'
+      }).setOrigin(0.5);
+      if (txt.width > pillW - 14) txt.setScale((pillW - 14) / txt.width);
+      const draw = (hov) => {
+        const active = this.activeTab === tab.id;
+        bg.clear();
+        bg.fillStyle(active ? 0x334477 : (hov ? 0x232342 : 0x161628), 0.95);
+        bg.fillRoundedRect(cx - pillW / 2, pillY, pillW, pillH, pillR);
+        bg.lineStyle(1, active ? 0x88aaff : (hov ? 0x6677aa : 0x445577), 1);
+        bg.strokeRoundedRect(cx - pillW / 2, pillY, pillW, pillH, pillR);
+        txt.setColor(active ? '#ffffff' : '#7788aa');
+      };
+      draw(false);
+      bg.setInteractive(new Phaser.Geom.Rectangle(cx - pillW / 2, pillY, pillW, pillH), Phaser.Geom.Rectangle.Contains);
+      bg.input.cursor = 'pointer';
+      bg.on('pointerdown', () => this.switchTab(tab.id));
+      bg.on('pointerover', () => draw(true));
+      bg.on('pointerout',  () => draw(false));
+      this.tabBtns[tab.id] = { draw };
     });
 
     this.contentContainer = this.add.container(0, 64);
@@ -154,9 +173,7 @@ export class MenuScene extends Phaser.Scene {
 
   switchTab(id) {
     this.activeTab = id;
-    Object.entries(this.tabBtns).forEach(([tid, btn]) => {
-      btn.setColor(tid === id ? '#ffffff' : '#556699');
-    });
+    Object.values(this.tabBtns).forEach(({ draw }) => draw(false));
     this.contentContainer.removeAll(true);
     this.renderTab();
   }

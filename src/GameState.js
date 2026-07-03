@@ -30,7 +30,10 @@ function defaultState() {
       l6TutorialSeen: false,
       floorsCleared: {}     // win counts per floor index
     },
-    enemyMult: 1.5         // damage multiplier for all enemy attacks (Easy=0.85, Normal=1.5, Hard=2.0)
+    enemyMult: 1.5,        // damage multiplier for all enemy attacks (Easy=0.85, Normal=1.5, Hard/Insane=2.0)
+    // Explicit difficulty identity. Hard and Insane share enemyMult 2.0, so the mult alone
+    // can't distinguish them; old saves lack this field and fall back to mult thresholds.
+    difficultyId: 'normal' // 'easy' | 'normal' | 'hard' | 'insane'
   };
 }
 
@@ -101,7 +104,8 @@ export const GameState = {
         scene:      d._savedAtScene || 'WorldScene',
         floor:      d._savedAtFloor,
         savedAt:    d._savedAt || 0,
-        difficulty: d.enemyMult ?? 1.5
+        difficulty: d.enemyMult ?? 1.5,
+        difficultyId: d.difficultyId    // undefined on old saves → label falls back to mult
       };
     } catch {
       return null;
@@ -120,9 +124,35 @@ export const GameState = {
   get gold() { return this.data.gold; },
   get progress() { return this.data.progress; },
   get enemyMult() { return this.data.enemyMult ?? 1.5; },
-  setDifficulty(mult) { this.data.enemyMult = mult; },
-  getDifficultyLabel(mult) { const m = mult ?? this.enemyMult; return m <= 1.0 ? 'Easy' : m <= 1.5 ? 'Normal' : 'Hard'; },
-  getDifficultyColor(mult) { const m = mult ?? this.enemyMult; return m <= 1.0 ? '#88ff88' : m <= 1.5 ? '#aaddff' : '#ffaaaa'; },
+  _idFromMult(m) { return m <= 1.0 ? 'easy' : m <= 1.5 ? 'normal' : 'hard'; },
+  get difficultyId() { return this.data.difficultyId || this._idFromMult(this.enemyMult); },
+  setDifficulty(mult, id) {
+    this.data.enemyMult = mult;
+    this.data.difficultyId = id || this._idFromMult(mult);
+  },
+  // Both take an optional (mult, id) pair for save-slot display; with no args they read the
+  // live state. id wins when present; old saves have no id and resolve from the mult.
+  getDifficultyLabel(mult, id) {
+    const did = id ?? (mult === undefined ? this.difficultyId : this._idFromMult(mult));
+    return { easy: 'Easy', normal: 'Normal', hard: 'Hard', insane: 'Insane' }[did] || 'Normal';
+  },
+  getDifficultyColor(mult, id) {
+    const did = id ?? (mult === undefined ? this.difficultyId : this._idFromMult(mult));
+    return { easy: '#88ff88', normal: '#aaddff', hard: '#ffaaaa', insane: '#ff66ff' }[did] || '#aaddff';
+  },
+
+  // Insane difficulty's EXP gate: heroes gain no EXP at/above the recommended level of the
+  // earliest UNDEFEATED boss (they must beat each boss at or below its recommended level).
+  // Caps mirror DungeonScene's displayed levelRec values (boss1=8, boss2=9, boss3=10).
+  // Every other difficulty is uncapped.
+  expLevelCap() {
+    if (this.difficultyId !== 'insane') return Infinity;
+    const p = this.progress;
+    if (!p.boss1Defeated) return 8;
+    if (!p.boss2Defeated) return 9;
+    if (!p.boss3Defeated) return 10;
+    return Infinity;
+  },
 
   addGold(amount) {
     this.data.gold = Math.max(0, this.data.gold + amount);
@@ -190,8 +220,14 @@ export const GameState = {
   awardExp(expAmount, goldAmount) {
     const results = [];
     this.addGold(goldAmount);
+    // Insane EXP gate (expLevelCap is Infinity elsewhere): at/above the cap a hero gains
+    // nothing; below it EXP applies normally but leveling stops AT the cap and overflow is
+    // discarded, not banked. Gold is never gated. The secret +1-level cheat zones bypass
+    // this entirely (they call levelUp() directly, not awardExp).
+    const cap = this.expLevelCap();
     for (const hero of this.data.party) {
       if (hero.status === 'dead') continue;
+      if (hero.level >= cap) { hero.exp = 0; continue; }
       hero.exp += expAmount;
       let leveled = false;
       while (hero.exp >= hero.expNext) {
@@ -199,6 +235,7 @@ export const GameState = {
         hero.exp -= hero.expNext;
         levelUp(hero);
         leveled = true;
+        if (hero.level >= cap) { hero.exp = 0; break; }
       }
       if (leveled) results.push({ hero, leveledUp: true });
     }

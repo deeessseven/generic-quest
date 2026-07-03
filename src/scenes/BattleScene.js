@@ -1848,6 +1848,11 @@ export class BattleScene extends Phaser.Scene {
         if (unlockMsgs.length > 0) msg += '\n' + unlockMsgs.join('\n') + `\n(Learn more in ${GT.placeBootcamp})`;
       }
       if (GameState.party.some(h => h.status === 'dead')) msg += '\n(KO\'d allies earn no EXP)';
+      // Insane EXP gate note — expLevelCap() is Infinity on every other difficulty.
+      const expCap = GameState.expLevelCap();
+      if (expCap !== Infinity && GameState.party.some(h => h.status !== 'dead' && h.level >= expCap)) {
+        msg += `\n(Insane: no EXP at Lv.${expCap} until the next boss falls!)`;
+      }
       this.showMessage(msg, 2200, () => this.returnToCaller(true));
     } else {
       this.showMessage('The party has been defeated...', 2000, () => this.showGameOver());

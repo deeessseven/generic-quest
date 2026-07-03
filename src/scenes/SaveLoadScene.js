@@ -116,8 +116,8 @@ export class SaveLoadScene extends Phaser.Scene {
 
       // Right column — diff label (top), date (middle), action (bottom)
       const diffMult = info.difficulty ?? 1.5;
-      const diffLabel = GameState.getDifficultyLabel(diffMult);
-      const diffColor = GameState.getDifficultyColor(diffMult);
+      const diffLabel = GameState.getDifficultyLabel(diffMult, info.difficultyId);
+      const diffColor = GameState.getDifficultyColor(diffMult, info.difficultyId);
       this.add.text(W - PADDING - 8, y + 5, diffLabel, {
         fontSize: '13px', color: diffColor, fontFamily: 'monospace'
       }).setOrigin(1, 0);

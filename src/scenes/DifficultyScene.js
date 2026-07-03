@@ -30,13 +30,18 @@ export class DifficultyScene extends Phaser.Scene {
     }).setOrigin(0.5).setDepth(12);
 
     const options = [
-      { label: 'Easy',   mult: 0.85, color: 0x44cc44, textColor: '#88ff88' },
-      { label: 'Normal', mult: 1.5,  color: 0x4488cc, textColor: '#aaddff' },
-      { label: 'Hard',   mult: 2.0,  color: 0xcc4444, textColor: '#ffaaaa' }
+      { label: 'Easy',   id: 'easy',   mult: 0.85, color: 0x44cc44, textColor: '#88ff88' },
+      { label: 'Normal', id: 'normal', mult: 1.5,  color: 0x4488cc, textColor: '#aaddff' },
+      { label: 'Hard',   id: 'hard',   mult: 2.0,  color: 0xcc4444, textColor: '#ffaaaa' },
+      // Insane: Hard's damage + the EXP gate (see GameState.expLevelCap) — heroes must
+      // beat each boss at or below its recommended level (8/9/10) to keep leveling.
+      { label: 'Insane', id: 'insane', mult: 2.0,  color: 0xcc22cc, textColor: '#ff66ff' }
     ];
 
-    options.forEach(({ label, mult, color, textColor }, i) => {
-      const by = py - 60 + i * 72;
+    // 4 buttons × 62px spacing keeps the last one (bottom edge py+132) clear of the
+    // Back button (top edge py+172).
+    options.forEach(({ label, id, mult, color, textColor }, i) => {
+      const by = py - 78 + i * 62;
       const bg = this.add.graphics().setDepth(12);
       const draw = (hover) => {
         bg.clear();
@@ -52,7 +57,7 @@ export class DifficultyScene extends Phaser.Scene {
       bg.setInteractive(new Phaser.Geom.Rectangle(px - 100, by - 24, 200, 48), Phaser.Geom.Rectangle.Contains);
       bg.on('pointerover',  () => { draw(true);  txt.setColor('#ffffff'); });
       bg.on('pointerout',   () => { draw(false); txt.setColor(textColor); });
-      bg.on('pointerdown',  () => this.startNewGame(mult));
+      bg.on('pointerdown',  () => this.startNewGame(mult, id));
     });
 
     // Back button — inside the panel, away from the OS home indicator / nav bar
@@ -80,9 +85,9 @@ export class DifficultyScene extends Phaser.Scene {
 
   goBack() { this.scene.start('TitleScene', {}); }
 
-  startNewGame(mult = 1.5) {
+  startNewGame(mult = 1.5, id) {
     GameState.init();
-    GameState.setDifficulty(mult);
+    GameState.setDifficulty(mult, id);
     this.scene.start('NameInputScene');
   }
 }

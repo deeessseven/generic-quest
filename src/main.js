@@ -34,12 +34,12 @@ enableIOSAudioThroughMuteSwitch(() => MusicSystem._ctx || null);
 // aspect. Clamped to [854, 1120] so ultra-tall phones don't leave huge vertical gaps and
 // wide screens (tablets) never squeeze the vertical layout below its 854 design height.
 const BASE_W = 480, DESIGN_H = 854;
-// Reserve a small band at the very bottom so the menu's bottom-row buttons / version
-// text clear Android's home-swipe gesture area. Must match body's padding-bottom in
-// index.html so the canvas fills the remaining area with no side/top letterbox.
-const BOTTOM_SAFE = 10;
+// Reserve a band at the top (status bar / camera cutout) and bottom (home-swipe
+// gesture area). Must match body's padding-top/padding-bottom in index.html so the
+// canvas fills the remaining area with no side letterbox.
+const TOP_SAFE = 20, BOTTOM_SAFE = 20;
 const _vw = window.innerWidth  || BASE_W;
-const _vh = (window.innerHeight || DESIGN_H) - BOTTOM_SAFE;
+const _vh = (window.innerHeight || DESIGN_H) - TOP_SAFE - BOTTOM_SAFE;
 const GAME_H = Math.min(1120, Math.max(DESIGN_H, Math.round(BASE_W * _vh / _vw)));
 
 const config = {

@@ -39,7 +39,10 @@ const BASE_W = 480, DESIGN_H = 854;
 // system bars); the web/PWA browser already keeps the page clear of the status bar,
 // so it only gets the small bottom band. Applied as body padding here at runtime —
 // index.html ships none — so the canvas fills the remaining area with no letterbox.
-const IS_NATIVE_APP = !!window.Capacitor;
+// NOTE: the Capacitor global exists on the WEB too once any @capacitor/* plugin is
+// bundled (backHandler imports @capacitor/app), so its mere presence is not a native
+// signal — must ask isNativePlatform() (same check backHandler.js uses).
+const IS_NATIVE_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 const TOP_SAFE = IS_NATIVE_APP ? 20 : 0;
 const BOTTOM_SAFE = IS_NATIVE_APP ? 20 : 10;
 // The production bundle is a plain <script> in <head>, so document.body doesn't

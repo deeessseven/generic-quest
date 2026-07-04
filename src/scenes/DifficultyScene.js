@@ -90,7 +90,7 @@ export class DifficultyScene extends Phaser.Scene {
   // QuitConfirm; hardware Back cancels via the back-modal stack).
   showInsaneInfo(mult, id) {
     const { width, height } = this.scale;
-    const boxW = width - 60, boxH = 330, boxX = 30, boxY = height / 2 - boxH / 2;
+    const boxW = width - 60, boxH = 380, boxX = 30, boxY = height / 2 - boxH / 2;
 
     const overlay = this.add.graphics().setDepth(30);
     overlay.fillStyle(0x000000, 0.55);
@@ -109,9 +109,9 @@ export class DifficultyScene extends Phaser.Scene {
 
     const body = this.add.text(width / 2, boxY + 66,
       'Hard mode, PLUS:\n\n' +
-      'Heroes stop earning EXP at each boss\'s recommended level ' +
-      '(Lv 8 / 9 / 10) until that boss is beaten.\n\n' +
-      'Beat every boss at or below its recommended level!', {
+      'Heroes stop earning experience points (EXP) when they reach the ' +
+      'recommended level for fighting a boss until that boss is beaten.\n\n' +
+      'Beat every boss at its recommended level!', {
         fontSize: '22px', color: '#ccddff', fontFamily: 'serif',
         wordWrap: { width: boxW - 44 }, align: 'center'
       }).setOrigin(0.5, 0).setDepth(32);

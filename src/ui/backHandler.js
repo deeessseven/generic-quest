@@ -19,6 +19,16 @@ import { MusicSystem } from '../audio/MusicSystem.js';
 /** Register an in-scene modal so the next Back press closes it first. */
 export function pushBackModal(scene, closeFn) {
   (scene._backModals || (scene._backModals = [])).push(closeFn);
+  // Scene instances persist across start/stop. If a scene is ever stopped with a dialog
+  // still open, a stale closeFn would survive into its next run and silently eat the
+  // first Back press — clear the stack on shutdown so that can't happen.
+  if (!scene._backModalsCleanupArmed) {
+    scene._backModalsCleanupArmed = true;
+    scene.events.once('shutdown', () => {
+      scene._backModals = [];
+      scene._backModalsCleanupArmed = false;
+    });
+  }
 }
 
 /** Remove a modal's close-fn from the stack (when it was closed some other way). */

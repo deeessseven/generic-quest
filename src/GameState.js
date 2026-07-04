@@ -84,7 +84,18 @@ export const GameState = {
         parsed.progress.boss3Defeated = parsed.progress.bossDefeated;
         delete parsed.progress.bossDefeated;
       }
-      this.data = parsed;
+      // Merge the save over fresh defaults so saves from older versions automatically gain
+      // any top-level / progress fields added since (no more per-field fallbacks scattered
+      // around). The save's own values always win. EXCEPTION — difficultyId must NOT fall
+      // back to the default 'normal': old saves lack the field and must derive it from
+      // their enemyMult (an old Hard save is 2.0; defaulting would relabel it Normal).
+      const defaults = defaultState();
+      this.data = {
+        ...defaults,
+        ...parsed,
+        progress: { ...defaults.progress, ...(parsed.progress || {}) },
+        difficultyId: parsed.difficultyId || this._idFromMult(parsed.enemyMult ?? 1.5),
+      };
       return true;
     } catch {
       return false;

@@ -815,7 +815,7 @@ export class BattleScene extends Phaser.Scene {
       const isHero3Special3 = spell.type === 'hero3Special3';
       const isHero1Special4 = spell.type === 'hero1Special4';
       const specialCost = this.getSpellCost(spell, hero);
-      const hpCost = isHero1Special4 ? Math.floor(hero.maxHp * this._scaledCostPct(0.65, hero, 0.025, 0.20)) : 0;
+      const hpCost = isHero1Special4 ? Math.floor(hero.maxHp * this._scaledCostPct(spell.hpCostPercent ?? 0.65, hero, 0.025, 0.20)) : 0;
       const hasEnoughHp = !isHero1Special4 || hero.hp > hpCost;
       const isFree = isCharge;
       const costColor = isFree ? '#88aaff' : isHero3Special3 ? (hero.mp >= specialCost ? '#88aaff' : '#aa4444') : isHero1Special4 ? (hasEnoughHp ? '#ff8888' : '#aa4444') : (hero.mp >= specialCost ? '#88aaff' : '#aa4444');
@@ -919,7 +919,8 @@ export class BattleScene extends Phaser.Scene {
           return;
         }
         if (spell.type === 'hero1Special4') {
-          const hpCostRising = Math.floor(hero.maxHp * this._scaledCostPct(0.65, hero, 0.025, 0.20));
+          // Cost comes from spells.js (single source of truth); display above uses the same formula.
+          const hpCostRising = Math.floor(hero.maxHp * this._scaledCostPct(spell.hpCostPercent ?? 0.65, hero, 0.025, 0.20));
           if (hero.hp <= hpCostRising) {
             this.showMessage('Not enough HP!', 900, () => this.executeSpecial(hero));
             return;
@@ -970,6 +971,8 @@ export class BattleScene extends Phaser.Scene {
             this.updateStats();
             const msgs = [`${hero.name} unleashes ${spell.name}!`];
             const wasAlive = this.enemies.map(e => e.hp > 0);
+            // Intentionally NO dodge roll: Rising Sun is an "always lands" ultimate
+            // (like Sorcery Flash) — the counter to boss2/boss3's high dodgePct.
             this.enemies.forEach((e, i) => {
               if (e.hp <= 0) return;
               const dmg = this.calcPhysicalDmg(hero.atk, e.def, spell.power);
@@ -1000,6 +1003,8 @@ export class BattleScene extends Phaser.Scene {
             spellFX(this, 'hero3Special3', sfIdxs.map(i => this.enemySprites[i]));
             SoundSystem.play('hit_magic');
             const sfMsgs = [`${hero.name} unleashes ${spell.name}!`];
+            // Intentionally NO dodge roll: Sorcery Flash always lands — dodge chance is
+            // one of the stats it halves, so it must connect to do its job.
             this.enemies.forEach(e => {
               if (e.hp <= 0) return;
               e.hp = Math.max(1, Math.floor(e.hp / 2));
@@ -1967,6 +1972,9 @@ export class BattleScene extends Phaser.Scene {
     const returnData  = { ...this.returnData };
     const returnScene = this.returnScene;
     const prevTrack   = this.prevTrackId;
+    // Outcome flag for the caller: DungeonScene only applies returnData.advanceTo (the
+    // "descend after this battle" floor) when the battle was WON — fleeing must not advance.
+    returnData.won = won;
     if (won && this.isBoss) returnData.bossDefeated = true;
 
     this.cameras.main.fade(400, 0, 0, 0, false, (cam, p) => {

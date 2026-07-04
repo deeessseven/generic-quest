@@ -61,7 +61,9 @@ export class DungeonScene extends Phaser.Scene {
         }
         return;
       }
-      if (data && data.floor !== undefined) this.floor = data.floor;
+      if (data && data.floor !== undefined) {
+        this.floor = (data.won && data.advanceTo !== undefined) ? data.advanceTo : data.floor;
+      }
       this.buildFloor();
     });
   }
@@ -488,7 +490,9 @@ export class DungeonScene extends Phaser.Scene {
       return;
     }
 
-    // 50% chance of a random battle before descending; winning advances to next floor
+    // 50% chance of a random battle before descending; ONLY winning advances to the next
+    // floor — advanceTo is applied by the wake handler when returnData.won is true, so
+    // fleeing the battle leaves you on the current floor instead of granting a free descent.
     if (Math.random() < 0.5) {
       const zone = this.FLOORS[this.floor].zone;
       this._launchBattle({
@@ -496,7 +500,7 @@ export class DungeonScene extends Phaser.Scene {
         zone,
         bgKey: this.FLOORS[this.floor].bgKey,
         returnScene: 'DungeonScene',
-        returnData: { floor: this.floor + 1 }
+        returnData: { floor: this.floor, advanceTo: this.floor + 1 }
       });
     } else {
       this.floor++;

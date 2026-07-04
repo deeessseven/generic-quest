@@ -1822,6 +1822,15 @@ export class BattleScene extends Phaser.Scene {
     }
 
     if (won) {
+      // Mark a beaten boss as defeated BEFORE awarding EXP: on Insane the kill itself
+      // raises the EXP cap, so the boss's own EXP must be awarded under the NEW cap
+      // (Lv8 hero beats boss1 → cap rises to 9 → the boss EXP levels them to 9).
+      // DungeonScene's wake handler sets the same flag again afterwards (idempotent)
+      // and still drives the floor advance off the battle's bossDefeated return data.
+      if (this.zone === 'boss1')      GameState.progress.boss1Defeated = true;
+      else if (this.zone === 'boss2') GameState.progress.boss2Defeated = true;
+      else if (this.zone === 'boss3') GameState.progress.boss3Defeated = true;
+
       const totalExp  = this.enemies.reduce((s, e) => s + e.exp,  0);
       const totalGold = this.enemies.reduce((s, e) => s + e.gold, 0);
       const lvlResults = GameState.awardExp(totalExp, totalGold);

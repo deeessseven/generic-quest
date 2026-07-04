@@ -49,8 +49,18 @@ const BOTTOM_SAFE = IS_NATIVE_APP ? 20 : 10;
 // exist yet at module-eval time — defer the style write until the DOM is ready.
 // (Phaser itself already waits for DOM ready before creating the canvas.)
 const applyBands = () => {
-  document.body.style.paddingTop = TOP_SAFE + 'px';
-  document.body.style.paddingBottom = BOTTOM_SAFE + 'px';
+  const b = document.body.style;
+  if (IS_NATIVE_APP) {
+    b.paddingTop = TOP_SAFE + 'px';
+    b.paddingBottom = BOTTOM_SAFE + 'px';
+  } else {
+    // Browser: safe-area insets are 0 → 0 top / 10px bottom as before. Installed PWAs
+    // on newer Android draw edge-to-edge UNDER the gesture-nav bar and report it via
+    // env(safe-area-inset-bottom) (~24px) — the band must ABSORB that inset (max),
+    // not stack on top of it, or the bottom gap balloons to ~40px.
+    b.paddingTop = 'env(safe-area-inset-top, 0px)';
+    b.paddingBottom = 'max(' + BOTTOM_SAFE + 'px, env(safe-area-inset-bottom, 0px))';
+  }
 };
 if (document.body) applyBands();
 else document.addEventListener('DOMContentLoaded', applyBands);
@@ -111,7 +121,26 @@ if (screen.orientation && screen.orientation.lock) {
 // hiding) often settles a beat AFTER load, so the very first fit can be stale —
 // re-fit a few times early so the canvas isn't stuck mis-sized until the user
 // happens to trigger a resize.
-const refit = () => game.scale.refresh();
+// While the loading screen (BootScene) is still up we additionally RE-DERIVE the game
+// height from the live viewport: GAME_H frozen from a stale (too-tall) innerHeight
+// makes FIT fit by height forever → permanent thin side letterbox bars. Measuring the
+// body's computed paddings also picks up the env(safe-area-inset-*) values that the
+// initial numeric estimate can't know. After boot, only refresh() — scenes lay out
+// once at create and must not have the game resized under them.
+const refit = () => {
+  try {
+    if (game.scene.isActive('BootScene')) {
+      const cs = getComputedStyle(document.body);
+      const availH = document.body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+      const availW = document.body.clientWidth || BASE_W;
+      const ideal = Math.min(1120, Math.max(DESIGN_H, Math.round(BASE_W * availH / availW)));
+      if (availH > 0 && Math.abs(ideal - game.scale.gameSize.height) > 4) {
+        game.scale.setGameSize(BASE_W, ideal);
+      }
+    }
+  } catch { /* fall through to plain refresh */ }
+  game.scale.refresh();
+};
 window.addEventListener('resize', refit);
 if (window.visualViewport) window.visualViewport.addEventListener('resize', refit);
 [60, 200, 500, 1000].forEach((t) => setTimeout(refit, t));

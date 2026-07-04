@@ -129,7 +129,13 @@ if (screen.orientation && screen.orientation.lock) {
 // once at create and must not have the game resized under them.
 const refit = () => {
   try {
-    if (game.scene.isActive('BootScene')) {
+    // Gate on BootScene's raw status, NOT isActive(): isActive() is true only once the
+    // scene is RUNNING (post-create), but on a real phone the early refit timers fire
+    // while BootScene is still LOADING the assets — exactly when the stale viewport
+    // settles. status < SHUTDOWN covers LOADING/CREATING/RUNNING; once Boot hands off
+    // to the title it's SHUTDOWN and we stop resizing (scenes lay out once at create).
+    const bs = game.scene.getScene('BootScene');
+    if (bs && bs.sys.settings.status < Phaser.Scenes.SHUTDOWN) {
       const cs = getComputedStyle(document.body);
       const availH = document.body.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
       const availW = document.body.clientWidth || BASE_W;
@@ -143,4 +149,4 @@ const refit = () => {
 };
 window.addEventListener('resize', refit);
 if (window.visualViewport) window.visualViewport.addEventListener('resize', refit);
-[60, 200, 500, 1000].forEach((t) => setTimeout(refit, t));
+[60, 200, 500, 1000, 2000].forEach((t) => setTimeout(refit, t));

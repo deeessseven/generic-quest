@@ -164,7 +164,11 @@ export const GT = {
 
   // ── Celebration scenes (used by variants that add BirthdayScene/BirthdayEndScene) ──
   // Defined here so applyText() accepts these keys from a variant's gametext.txt.
-  // Defaults are generic; a variant overrides them. \n = line break; {boss3}/{town}/{hero1} work.
+  // Defaults are generic; a variant overrides them. \n = line break; {boss3}/{town} work.
+  // ⚠ Do NOT use {hero1}/{hero2}/{hero3} in celebration* keys: the opening BirthdayScene
+  // runs BEFORE name entry (and after a quit-to-title it would show the PREVIOUS run's
+  // names), and BirthdayEndScene runs AFTER EndingScene's GameState.init() reset — so
+  // hero placeholders resolve to default/stale names here, never the player's chosen ones.
   celebrationShowDino: 'false',   // 'true' shows the decorative dino in the opening celebration
   celebrationBanner: '🎂 Happy Birthday! 🎂',
   celebrationName: 'FRIEND',

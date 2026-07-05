@@ -1389,6 +1389,12 @@ export class BootcampScene extends Phaser.Scene {
     this.showMessage(step.feedback, 3200, () => this.advanceStep());
   }
 
+  // ⚠ SYNC WARNING: the MP/HP costs and effect numbers in this switch (and in
+  // showSpecialList's cost display) are duplicated from spells.js / BattleScene rather
+  // than shared — if a cost in spells.js changes, update the matching case here too.
+  // Known intentional difference: the tutorial charges the FLAT percent and skips
+  // BattleScene's above-Lv-10 cost discount (_scaledCostPct) — harmless because
+  // tutorial stats are fake (reset every step, restored on exit).
   _execSpecial(step, spell) {
     const hero     = GameState.party[step.heroIdx];
     const allIdxs  = this._dummies.map((_, i) => i);

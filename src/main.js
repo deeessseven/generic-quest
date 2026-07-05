@@ -43,8 +43,8 @@ const BASE_W = 480, DESIGN_H = 854;
 // bundled (backHandler imports @capacitor/app), so its mere presence is not a native
 // signal — must ask isNativePlatform() (same check backHandler.js uses).
 const IS_NATIVE_APP = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
-const TOP_SAFE = IS_NATIVE_APP ? 20 : 0;
-const BOTTOM_SAFE = IS_NATIVE_APP ? 20 : 10;
+const TOP_SAFE = IS_NATIVE_APP ? 30 : 0;
+const BOTTOM_SAFE = IS_NATIVE_APP ? 30 : 10;
 // The production bundle is a plain <script> in <head>, so document.body doesn't
 // exist yet at module-eval time — defer the style write until the DOM is ready.
 // (Phaser itself already waits for DOM ready before creating the canvas.)

@@ -107,6 +107,29 @@ export class TitleScene extends Phaser.Scene {
       }).setOrigin(0.5, 1);
     }
 
+    // ── Hero party row — sits below CONTINUE, above the version line ──
+    // Hero textures are 512² with transparent padding; the visible sprite fills
+    // the lower ~55% and touches the texture bottom, so anchor by bottom edge
+    // and oversize the frame to make the visible pixels fill the gap.
+    const contBottom = menuY + 80 + 30;
+    const versionTop = footer.y - footer.height / 2 - 4 - 26;
+    const heroBottom = versionTop - 6;
+    const heroSize = Phaser.Math.Clamp((heroBottom - contBottom) / 0.55, 80, 150);
+    const heroSpacing = heroSize * 0.68;
+    ['hero1', 'hero2', 'hero3'].forEach((key, i) => {
+      const img = this.add.image(width / 2 + (i - 1) * heroSpacing, heroBottom, key)
+        .setOrigin(0.5, 1)
+        .setDisplaySize(heroSize, heroSize);
+      this.tweens.add({
+        targets: img, y: heroBottom - 5,
+        duration: 1400, yoyo: true, repeat: -1,
+        delay: i * 220, ease: 'Sine.easeInOut'
+      });
+    });
+
+    // ── Quit button (top-left) — same action as Android Back on title ──
+    this.createQuitButton(12, 12, 92, 40);
+
     MusicSystem.play('title');
 
     // Floating particles
@@ -122,6 +145,25 @@ export class TitleScene extends Phaser.Scene {
       sub: '',
       confirmLabel: 'Quit'
     });
+  }
+
+  createQuitButton(x, y, w, h) {
+    const bg = this.add.graphics();
+    const draw = (hover) => {
+      bg.clear();
+      bg.fillStyle(hover ? 0x224488 : 0x112244, 0.9);
+      bg.fillRoundedRect(x, y, w, h, 8);
+      bg.lineStyle(2, hover ? 0x88ccff : 0x4488cc, 1);
+      bg.strokeRoundedRect(x, y, w, h, 8);
+    };
+    draw(false);
+    const txt = this.add.text(x + w / 2, y + h / 2, 'Quit', {
+      fontSize: '24px', color: '#aaddff', fontFamily: 'serif'
+    }).setOrigin(0.5);
+    bg.setInteractive(new Phaser.Geom.Rectangle(x, y, w, h), Phaser.Geom.Rectangle.Contains);
+    bg.on('pointerover', () => { draw(true);  txt.setColor('#ffffff'); });
+    bg.on('pointerout',  () => { draw(false); txt.setColor('#aaddff'); });
+    bg.on('pointerdown', () => this.handleBackButton());
   }
 
   createMenuButton(x, y, label, callback) {

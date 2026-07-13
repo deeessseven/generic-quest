@@ -97,8 +97,13 @@ export class NameInputScene extends Phaser.Scene {
       this._composing = false;
       this._syncFromInput();
     });
+    // Sync on EVERY input event, including during IME composition. Samsung
+    // Keyboard / Gboard predictive text holds the whole word in a composition
+    // (compositionend may not fire until the word is committed), so skipping
+    // composition events made typed letters invisible for seconds on those
+    // keyboards. Reading .value mid-composition is safe — it includes the
+    // composition text and _syncFromInput reads the whole value each time.
     this._mobileInput.addEventListener('input', () => {
-      if (this._composing) return;
       this._syncFromInput();
     });
     this._mobileInput.addEventListener('keydown', e => {
@@ -154,7 +159,10 @@ export class NameInputScene extends Phaser.Scene {
   _syncFromInput() {
     const val = this._mobileInput.value.slice(0, 12);
     this.names[this.active] = val;
-    if (this._mobileInput.value.length > 12) {
+    // Never rewrite the input's value while the IME is composing — mutating it
+    // mid-composition breaks Samsung/Gboard IMEs (stuck or duplicated text).
+    // compositionend calls this again, so the trim still lands on commit.
+    if (!this._composing && this._mobileInput.value.length > 12) {
       this._mobileInput.value = val;
     }
     this.cursorOn = true;

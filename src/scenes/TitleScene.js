@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import { GameState } from '../GameState.js';
+import { AvatarStore } from '../data/AvatarStore.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { GT, resolveStory } from '../data/GameText.js';
@@ -117,7 +118,7 @@ export class TitleScene extends Phaser.Scene {
     const heroSize = Phaser.Math.Clamp((heroBottom - contBottom) / 0.55, 80, 150);
     const heroSpacing = heroSize * 0.68;
     ['hero1', 'hero2', 'hero3'].forEach((key, i) => {
-      const img = this.add.image(width / 2 + (i - 1) * heroSpacing, heroBottom, key)
+      const img = this.add.image(width / 2 + (i - 1) * heroSpacing, heroBottom, this.titleHeroTexture(key))
         .setOrigin(0.5, 1)
         .setDisplaySize(heroSize, heroSize);
       this.tweens.add({
@@ -145,6 +146,39 @@ export class TitleScene extends Phaser.Scene {
       sub: '',
       confirmLabel: 'Quit'
     });
+  }
+
+  // Title-only copy of a hero texture with a white outline hugging the opaque
+  // silhouette. The bundled hero art is mirrored at boot for battle scenes —
+  // un-mirror it here so the title row matches the app icon. Player-uploaded
+  // custom art is never mirrored at boot, so it keeps its orientation.
+  // Regenerated on every title create() so mid-session art changes show up.
+  titleHeroTexture(key) {
+    const outKey = `${key}_title`;
+    if (this.textures.exists(outKey)) this.textures.remove(outKey);
+    const src = this.textures.getFrame(key).source.image;
+    const S = 512, R = 8;
+    const sil = document.createElement('canvas');
+    sil.width = sil.height = S;
+    const sx = sil.getContext('2d');
+    sx.drawImage(src, 0, 0, S, S);
+    sx.globalCompositeOperation = 'source-in';
+    sx.fillStyle = '#ffffff';
+    sx.fillRect(0, 0, S, S);
+    const out = document.createElement('canvas');
+    out.width = out.height = S + 2 * R;
+    const ox = out.getContext('2d');
+    if (AvatarStore._bundled.has(key)) {
+      ox.translate(out.width, 0);
+      ox.scale(-1, 1);
+    }
+    for (let a = 0; a < 16; a++) {
+      ox.drawImage(sil, R + Math.round(Math.cos(a * Math.PI / 8) * R),
+                        R + Math.round(Math.sin(a * Math.PI / 8) * R));
+    }
+    ox.drawImage(src, R, R, S, S);
+    this.textures.addCanvas(outKey, out);
+    return outKey;
   }
 
   createQuitButton(x, y, w, h) {

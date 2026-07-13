@@ -115,7 +115,7 @@ export class TitleScene extends Phaser.Scene {
     const contBottom = menuY + 80 + 30;
     const versionTop = footer.y - footer.height / 2 - 4 - 26;
     const heroBottom = versionTop - 6;
-    const heroSize = Phaser.Math.Clamp((heroBottom - contBottom) / 0.55, 80, 150);
+    const heroSize = Phaser.Math.Clamp((heroBottom - contBottom) / 0.55, 80, 185);
     const heroSpacing = heroSize * 0.68;
     ['hero1', 'hero2', 'hero3'].forEach((key, i) => {
       const img = this.add.image(width / 2 + (i - 1) * heroSpacing, heroBottom, this.titleHeroTexture(key))

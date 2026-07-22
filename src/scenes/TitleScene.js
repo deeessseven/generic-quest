@@ -193,14 +193,19 @@ export class TitleScene extends Phaser.Scene {
     const idx = label.lastIndexOf(' ');
     const line1 = idx < 0 ? label : label.slice(0, idx);
     const line2 = idx < 0 ? '' : label.slice(idx + 1);
-    const make = (text, dy) => {
-      const t = this.add.text(x + w / 2, y + h / 2 + dy, text, {
-        fontSize: '14px', color: '#aaddff', fontFamily: 'serif'
+    // Font/offset scale with h (not fixed pixels) so this stays correct if the button height
+    // changes again: fontSize ~1/3 of h, line centers ~44% of h apart — leaves a small margin
+    // above/below the two-line block at h=60 (20px font, ±13px offsets).
+    const fontSize = Math.round(h * 0.33);
+    const dy = Math.round(h * 0.22);
+    const make = (text, off) => {
+      const t = this.add.text(x + w / 2, y + h / 2 + off, text, {
+        fontSize: `${fontSize}px`, color: '#aaddff', fontFamily: 'serif'
       }).setOrigin(0.5);
       if (text && t.width > w - 10) t.setScale((w - 10) / t.width);
       return t;
     };
-    return [make(line1, -10), make(line2, 10)];
+    return [make(line1, -dy), make(line2, dy)];
   }
 
   createQuitButton(x, y, w, h) {

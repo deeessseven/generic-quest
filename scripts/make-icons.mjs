@@ -188,12 +188,119 @@ export function makeIcons(srcTitlePng, outDir) {
   return { side, y };
 }
 
+// ── Base-game icon: title.png background + the 3 party heroes, outlined, bottom-anchored ──────
+// The base app icon (unlike variants) also shows the party heroes standing in front of the boba
+// cup — added by hand once (commit b9cf45a/ed47101, 2026-07-13) with no generating script, so this
+// reconstructs it from scratch: the per-hero scale/position below was reverse-engineered via
+// template-matching against that shipped icon (measured 2026-07-22, verified by re-rendering and
+// confirming an exact visual match before trusting the numbers). Do not hand-tune these without
+// re-verifying the same way — the fit is sensitive (this is hand-painted art, not a formula).
+const HERO_BASELINE = {
+  // s = scale of the raw 512×512 hero canvas; ox/oy = placement of that (un-padded) canvas's
+  // top-left corner in the 480×480 icon; bmaxY = the hero's own opaque bbox bottom (its "feet"),
+  // measured within its own 512 canvas — used to anchor growth by the VISIBLE sprite, not the
+  // transparent canvas padding around it.
+  hero1: { s: 0.524, ox: 2,   oy: 225, bx: 97,  bw: 273, bmaxY: 492 },
+  hero2: { s: 0.528, ox: 121, oy: 225, bx: 162, bw: 226, bmaxY: 502 },
+  hero3: { s: 0.540, ox: 239, oy: 219, bx: 114, bw: 282, bmaxY: 508 },
+};
+const OUTLINE_R = 8; // matches TitleScene.js's titleHeroTexture() outline radius, same source art
+
+// Base app-icon tuning (David 2026-07-22): background panned up 10% of the icon side (reveals more
+// foreground/path, mascot sits higher) + party heroes scaled 20% bigger, anchored so each hero's
+// own bottom edge + horizontal center stay put (grows upward/outward only). Exported so both the
+// CLI below and scripts/build-variants.mjs use the same numbers.
+export const ICON_BG_SHIFT = 0.10;
+export const ICON_HERO_SCALE = 1.2;
+
+// White silhouette (RGB forced white, alpha kept) stamped at 16 angles around radius R, then the
+// original sprite drawn on top — an R-px outline hugging the silhouette. Mirrors TitleScene.js's
+// titleHeroTexture() (browser Canvas globalCompositeOperation) as plain pixel ops. Output canvas
+// is S+2R square so the outline is never clipped.
+function addOutline(rgba, S, R) {
+  const silhouette = Buffer.alloc(S * S * 4);
+  for (let i = 0; i < S * S; i++) {
+    const d = i * 4;
+    silhouette[d] = silhouette[d + 1] = silhouette[d + 2] = 255;
+    silhouette[d + 3] = rgba[d + 3];
+  }
+  const side = S + 2 * R;
+  const canvas = Buffer.alloc(side * side * 4);
+  for (let a = 0; a < 16; a++) {
+    const dx = R + Math.round(Math.cos(a * Math.PI / 8) * R);
+    const dy = R + Math.round(Math.sin(a * Math.PI / 8) * R);
+    blitAlpha(canvas, side, side, silhouette, S, S, dx, dy);
+  }
+  blitAlpha(canvas, side, side, rgba, S, S, R, R);
+  return { rgba: canvas, side };
+}
+
+// Alpha-blend src onto an opaque canvas at (dx,dy), clipping to canvas bounds.
+function blitAlpha(canvas, cw, ch, src, sw, sh, dx, dy) {
+  for (let y = 0; y < sh; y++) {
+    const cy = dy + y; if (cy < 0 || cy >= ch) continue;
+    for (let x = 0; x < sw; x++) {
+      const cx = dx + x; if (cx < 0 || cx >= cw) continue;
+      const s = (y * sw + x) * 4, a = src[s + 3] / 255; if (a <= 0) continue;
+      const d = (cy * cw + cx) * 4;
+      canvas[d]     = Math.round(src[s]     * a + canvas[d]     * (1 - a));
+      canvas[d + 1] = Math.round(src[s + 1] * a + canvas[d + 1] * (1 - a));
+      canvas[d + 2] = Math.round(src[s + 2] * a + canvas[d + 2] * (1 - a));
+      canvas[d + 3] = 255;
+    }
+  }
+}
+
+// Crop title.png (background) + composite the 3 heroes on top of HERO_BASELINE, adjusted by
+// bgShiftFrac (fraction of icon side to pan the crop; positive = background appears to shift UP,
+// revealing more foreground at the bottom) and heroScale (multiplies each hero's baseline scale,
+// anchored so its OWN bottom-edge pixel + horizontal center stay fixed — i.e. it grows upward/
+// outward only, never shifting position). Writes the same output set as makeIcons().
+export function makeHeroIcon(srcTitlePng, heroDir, outDir, bgShiftFrac = 0, heroScale = 1) {
+  const { width, height, rgba } = decodePNG(readFileSync(srcTitlePng));
+  const side = Math.min(width, height);
+  const x = Math.floor((width - side) / 2);
+  const y = clamp(Math.round(height * 0.38 - side / 2) + Math.round(side * bgShiftFrac), 0, height - side);
+  const square = cropSquare(rgba, width, height, x, y, side);
+
+  for (const [name, b] of Object.entries(HERO_BASELINE)) {
+    const hero = decodePNG(readFileSync(join(heroDir, `${name}.png`)));
+    const { rgba: outlined, side: oSide } = addOutline(hero.rgba, hero.width, OUTLINE_R);
+    const newS = b.s * heroScale;
+    const oldBottom = b.oy + b.bmaxY * b.s;
+    const oldCenterX = b.ox + (b.bx + b.bw / 2) * b.s;
+    const newOy = oldBottom - b.bmaxY * newS;
+    const newOx = oldCenterX - (b.bx + b.bw / 2) * newS;
+    const dSide = Math.round(oSide * newS);
+    const resized = resize(outlined, oSide, oSide, dSide, dSide);
+    // newOx/newOy target the un-padded 512 canvas; shift by -OUTLINE_R*newS so the CHARACTER (not
+    // the outline canvas) lands at the intended spot — the outline then extends outward from it.
+    blitAlpha(square, side, side, resized, dSide, dSide,
+      Math.round(newOx - OUTLINE_R * newS), Math.round(newOy - OUTLINE_R * newS));
+  }
+
+  for (const size of OUT_SIZES) {
+    writeFileSync(join(outDir, `icon-${size}.png`), encodePNG(size, size, resize(square, side, side, size, size)));
+  }
+  const mask = padToMaskable(square, side, [0x00, 0x00, 0x11]);
+  for (const size of [192, 512]) {
+    writeFileSync(join(outDir, `icon-maskable-${size}.png`), encodePNG(size, size, resize(mask, side, side, size, size)));
+  }
+  return { side, y };
+}
+
 // ── CLI:  node scripts/make-icons.mjs [srcTitlePng] [outDir] ──────────────────
-// Defaults to the base game's title → public/ (vite then copies these into docs/ and each variant).
+// Defaults to the base game's title → public/ (vite then copies these into docs/ and each variant;
+// build-variants.mjs also regenerates docs/ directly — this CLI keeps public/'s dev-preview copies
+// in sync). Base uses the hero-composite icon (see makeHeroIcon); pass a THIRD arg pointing outside
+// public/custom-art to fall back to a plain crop (e.g. for testing a variant's title.png).
 if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith('make-icons.mjs')) {
   const src = process.argv[2] || SRC;
   const outDir = process.argv[3] || join(ROOT, 'public');
+  const heroDir = process.argv[4] || join(ROOT, 'public', 'custom-art');
   if (!existsSync(src)) { console.error('missing', src); process.exit(1); }
-  const { side, y } = makeIcons(src, outDir);
+  const { side, y } = src === SRC
+    ? makeHeroIcon(src, heroDir, outDir, ICON_BG_SHIFT, ICON_HERO_SCALE)
+    : makeIcons(src, outDir);
   console.log(`✓ icons (${side}×${side} crop @ y=${y}) → ${outDir}`);
 }

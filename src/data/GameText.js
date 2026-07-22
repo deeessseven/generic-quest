@@ -182,6 +182,12 @@ export const GT = {
   celebrationEndBody: 'You defeated {boss3},\nsaved {town},\nand had fun along the way!\n\nNow go enjoy your real celebration —\nyou earned it! 🎂',
   celebrationEndSignoff: '— With love ♥',
   celebrationEndPrompt: '✦  Tap to return to title  ✦',
+
+  // ── Sharing (title-screen Share button; see shareGame in src/shareGame.js) ──
+  btnShareGame: 'Share',
+  toastLinkCopied: 'Link copied!',
+  toastShareFailed: 'Sharing failed — please try again',
+  shareUrl: '', // link the share/copy sends; '' = the page's own URL
 };
 
 // Substitute all story placeholders in text using current GT values and party names.

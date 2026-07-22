@@ -8,6 +8,10 @@
 # ── Game Title ───────────────────────────────────────────────────────────────
 gameTitle = Boba Quest
 
+# ── Sharing ───────────────────────────────────────────────────────────────────
+# Link sent by the title-screen Share button (blank = share the page's own URL).
+shareUrl = https://play.google.com/store/apps/details?id=com.dacquery.bobaquest
+
 # ── Custom Image Tabs ────────────────────────────────────────────────────────
 # Show/hide the Menu's "Avatars" and "Backgrounds" tabs (the custom image upload UI).
 # true = show the upload tabs, false = hide them. Flip this to easily hide/unhide

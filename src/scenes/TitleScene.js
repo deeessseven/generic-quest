@@ -7,6 +7,7 @@ import { GT, resolveStory } from '../data/GameText.js';
 import { variant } from '../variants/registry.js';
 import { App } from '@capacitor/app';
 import { showQuitConfirm } from '../ui/QuitConfirm.js';
+import { shareGame } from '../shareGame.js';
 
 export class TitleScene extends Phaser.Scene {
   constructor() { super('TitleScene'); }
@@ -130,6 +131,9 @@ export class TitleScene extends Phaser.Scene {
 
     // ── Quit button (top-left) — same action as Android Back on title ──
     this.createQuitButton(12, 12, 92, 40);
+    // ── Share button (top-right, mirrors Quit) — system share sheet / clipboard fallback ──
+    this._shareBusy = false;
+    this.createShareButton(width - 12 - 92, 12, 92, 40);
 
     MusicSystem.play('title');
 
@@ -198,6 +202,45 @@ export class TitleScene extends Phaser.Scene {
     bg.on('pointerover', () => { draw(true);  txt.setColor('#ffffff'); });
     bg.on('pointerout',  () => { draw(false); txt.setColor('#aaddff'); });
     bg.on('pointerdown', () => this.handleBackButton());
+  }
+
+  createShareButton(x, y, w, h) {
+    const bg = this.add.graphics();
+    const draw = (hover) => {
+      bg.clear();
+      bg.fillStyle(hover ? 0x224488 : 0x112244, 0.9);
+      bg.fillRoundedRect(x, y, w, h, 8);
+      bg.lineStyle(2, hover ? 0x88ccff : 0x4488cc, 1);
+      bg.strokeRoundedRect(x, y, w, h, 8);
+    };
+    draw(false);
+    const txt = this.add.text(x + w / 2, y + h / 2, GT.btnShareGame, {
+      fontSize: '24px', color: '#aaddff', fontFamily: 'serif'
+    }).setOrigin(0.5);
+    if (txt.width > w - 10) txt.setScale((w - 10) / txt.width);
+    bg.setInteractive(new Phaser.Geom.Rectangle(x, y, w, h), Phaser.Geom.Rectangle.Contains);
+    bg.on('pointerover', () => { draw(true);  txt.setColor('#ffffff'); });
+    bg.on('pointerout',  () => { draw(false); txt.setColor('#aaddff'); });
+    bg.on('pointerdown', async () => {
+      if (this._shareBusy) return;
+      this._shareBusy = true;
+      try {
+        const r = await shareGame();
+        if (r === 'copied' && this.scene.isActive()) this._toast(GT.toastLinkCopied);
+        else if (r === 'failed' && this.scene.isActive()) this._toast(GT.toastShareFailed);
+      } finally { this._shareBusy = false; }
+    });
+    return bg;
+  }
+
+  // Brief self-destroying toast (matches MenuScene._showToast's styling for consistency).
+  _toast(msg) {
+    const { width, height } = this.scale;
+    const txt = this.add.text(width / 2, height * 0.85, msg, {
+      fontSize: '26px', color: '#ffaa44', fontFamily: 'serif',
+      backgroundColor: '#000022', padding: { x: 16, y: 8 }
+    }).setOrigin(0.5).setDepth(30);
+    this.time.delayedCall(1800, () => txt.destroy());
   }
 
   createMenuButton(x, y, label, callback) {

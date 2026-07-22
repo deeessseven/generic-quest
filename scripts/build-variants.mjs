@@ -27,7 +27,7 @@ import { execSync } from 'node:child_process';
 import { existsSync, readdirSync, statSync, cpSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { makeIcons } from './make-icons.mjs';
+import { makeIcons, makeHeroIcon, ICON_BG_SHIFT, ICON_HERO_SCALE } from './make-icons.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'docs');
@@ -76,8 +76,9 @@ function titlePngFor(id) {
 console.log('▶ base → docs/');
 execSync('npm run build', { stdio: 'inherit', cwd: ROOT });
 // Regenerate base icons from current source (so a base-art change can't leave a stale base icon),
-// then bake the base title into the manifest.
-makeIcons(join(PUBLIC, 'custom-art', 'title.png'), DOCS);
+// then bake the base title into the manifest. Base gets the hero-composite icon (background +
+// party row); variants keep the plain title.png crop via makeIcons() below.
+makeHeroIcon(join(PUBLIC, 'custom-art', 'title.png'), join(PUBLIC, 'custom-art'), DOCS, ICON_BG_SHIFT, ICON_HERO_SCALE);
 stampSW(DOCS);
 const baseTitle = readGameTitle(join(PUBLIC, 'gametext.txt'));
 patchManifestName(DOCS, baseTitle, REPO_BASE);

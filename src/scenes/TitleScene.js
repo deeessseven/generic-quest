@@ -143,8 +143,15 @@ export class TitleScene extends Phaser.Scene {
     });
   }
 
-  // Android Back on the title screen (top level) → confirm, then exit the app.
+  // Android Back on the title screen (top level) → confirm, then exit the app. App.exitApp()
+  // is native-only — @capacitor/app's web implementation THROWS ("Not implemented on web"),
+  // and since that throw happens inside the confirm dialog's fade-to-black completion callback,
+  // it breaks Phaser's render loop and leaves the screen stuck fully faded to black (bug found
+  // 2026-07-22: tapping Quit on web = permanent black screen). There's nothing to exit on web,
+  // so skip the dialog there entirely — the button simply stays on the title screen, matching
+  // what Android's hardware Back already does on a platform with no "quit the app" concept.
   handleBackButton() {
+    if (!window.Capacitor?.isNativePlatform?.()) return;
     showQuitConfirm(this, () => App.exitApp(), {
       message: `Quit ${resolveStory(GT.gameTitle)}?`,
       sub: '',

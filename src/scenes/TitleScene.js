@@ -185,6 +185,24 @@ export class TitleScene extends Phaser.Scene {
     return outKey;
   }
 
+  // Two centered lines within a button's box, split from a single "Word Word" label on its LAST
+  // space (falls back to one line, shown on the top slot, if there's no space — e.g. a custom
+  // single-word override). fontSize/offsets tuned so two lines fit inside a 40px-tall button
+  // without crowding. Returns the two Text objects so callers can recolor both on hover.
+  _twoLineLabel(x, y, w, h, label) {
+    const idx = label.lastIndexOf(' ');
+    const line1 = idx < 0 ? label : label.slice(0, idx);
+    const line2 = idx < 0 ? '' : label.slice(idx + 1);
+    const make = (text, dy) => {
+      const t = this.add.text(x + w / 2, y + h / 2 + dy, text, {
+        fontSize: '14px', color: '#aaddff', fontFamily: 'serif'
+      }).setOrigin(0.5);
+      if (text && t.width > w - 10) t.setScale((w - 10) / t.width);
+      return t;
+    };
+    return [make(line1, -10), make(line2, 10)];
+  }
+
   createQuitButton(x, y, w, h) {
     const bg = this.add.graphics();
     const draw = (hover) => {
@@ -195,12 +213,10 @@ export class TitleScene extends Phaser.Scene {
       bg.strokeRoundedRect(x, y, w, h, 8);
     };
     draw(false);
-    const txt = this.add.text(x + w / 2, y + h / 2, 'Quit', {
-      fontSize: '24px', color: '#aaddff', fontFamily: 'serif'
-    }).setOrigin(0.5);
+    const [t1, t2] = this._twoLineLabel(x, y, w, h, GT.btnQuitGame);
     bg.setInteractive(new Phaser.Geom.Rectangle(x, y, w, h), Phaser.Geom.Rectangle.Contains);
-    bg.on('pointerover', () => { draw(true);  txt.setColor('#ffffff'); });
-    bg.on('pointerout',  () => { draw(false); txt.setColor('#aaddff'); });
+    bg.on('pointerover', () => { draw(true);  t1.setColor('#ffffff'); t2.setColor('#ffffff'); });
+    bg.on('pointerout',  () => { draw(false); t1.setColor('#aaddff'); t2.setColor('#aaddff'); });
     bg.on('pointerdown', () => this.handleBackButton());
   }
 
@@ -214,13 +230,10 @@ export class TitleScene extends Phaser.Scene {
       bg.strokeRoundedRect(x, y, w, h, 8);
     };
     draw(false);
-    const txt = this.add.text(x + w / 2, y + h / 2, GT.btnShareGame, {
-      fontSize: '24px', color: '#aaddff', fontFamily: 'serif'
-    }).setOrigin(0.5);
-    if (txt.width > w - 10) txt.setScale((w - 10) / txt.width);
+    const [t1, t2] = this._twoLineLabel(x, y, w, h, GT.btnShareGame);
     bg.setInteractive(new Phaser.Geom.Rectangle(x, y, w, h), Phaser.Geom.Rectangle.Contains);
-    bg.on('pointerover', () => { draw(true);  txt.setColor('#ffffff'); });
-    bg.on('pointerout',  () => { draw(false); txt.setColor('#aaddff'); });
+    bg.on('pointerover', () => { draw(true);  t1.setColor('#ffffff'); t2.setColor('#ffffff'); });
+    bg.on('pointerout',  () => { draw(false); t1.setColor('#aaddff'); t2.setColor('#aaddff'); });
     bg.on('pointerdown', async () => {
       if (this._shareBusy) return;
       this._shareBusy = true;

@@ -183,8 +183,10 @@ export const GT = {
   celebrationEndSignoff: '— With love ♥',
   celebrationEndPrompt: '✦  Tap to return to title  ✦',
 
-  // ── Sharing (title-screen Share button; see shareGame in src/shareGame.js) ──
-  btnShareGame: 'Share',
+  // ── Title-screen buttons (Quit top-left, Share top-right — two-line labels, see
+  // TitleScene.js's _twoLineLabel; each splits on its LAST space) ──────────────
+  btnQuitGame: 'Quit Game',
+  btnShareGame: 'Share Game',
   toastLinkCopied: 'Link copied!',
   toastShareFailed: 'Sharing failed — please try again',
   shareUrl: '', // link the share/copy sends; '' = the page's own URL

@@ -130,10 +130,10 @@ export class TitleScene extends Phaser.Scene {
     });
 
     // ── Quit button (top-left) — same action as Android Back on title ──
-    this.createQuitButton(12, 12, 92, 40);
+    this.createQuitButton(12, 12, 92, 60);
     // ── Share button (top-right, mirrors Quit) — system share sheet / clipboard fallback ──
     this._shareBusy = false;
-    this.createShareButton(width - 12 - 92, 12, 92, 40);
+    this.createShareButton(width - 12 - 92, 12, 92, 60);
 
     MusicSystem.play('title');
 

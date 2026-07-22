@@ -194,10 +194,10 @@ export class TitleScene extends Phaser.Scene {
     const line1 = idx < 0 ? label : label.slice(0, idx);
     const line2 = idx < 0 ? '' : label.slice(idx + 1);
     // Font/offset scale with h (not fixed pixels) so this stays correct if the button height
-    // changes again: fontSize ~1/3 of h, line centers ~44% of h apart — leaves a small margin
-    // above/below the two-line block at h=60 (20px font, ±13px offsets).
-    const fontSize = Math.round(h * 0.33);
-    const dy = Math.round(h * 0.22);
+    // changes again: at h=60 this is 22px font, ±14px offsets (28px line-center spacing —
+    // still clears the ~25px two-line box a 22px font needs, so lines don't crowd each other).
+    const fontSize = Math.round(h * 0.367);
+    const dy = Math.round(h * 0.233);
     const make = (text, off) => {
       const t = this.add.text(x + w / 2, y + h / 2 + off, text, {
         fontSize: `${fontSize}px`, color: '#aaddff', fontFamily: 'serif'

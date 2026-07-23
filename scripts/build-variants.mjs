@@ -28,6 +28,7 @@ import { existsSync, readdirSync, statSync, cpSync, readFileSync, writeFileSync 
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { makeIcons, makeHeroIcon, ICON_BG_SHIFT, ICON_HERO_SCALE } from './make-icons.mjs';
+import { overlayVariantContent } from './variantOverlay.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DOCS = join(ROOT, 'docs');
@@ -92,27 +93,36 @@ const ids = readdirSync(SRC_VARIANTS).filter(
     existsSync(join(SRC_VARIANTS, id, 'variant.js')),
 );
 
+// makeIcons() output is a pure function of its source title.png (5 fixed filenames — see
+// make-icons.mjs). No variant currently overrides custom-art/title.png, so every variant was
+// redoing the identical decode/resize/encode work makeIcons() already did for the previous one.
+// Cache by resolved source path and copy the already-generated files instead of recomputing —
+// same output, just not redundantly recomputed. (Base's OWN icon is the separate hero-composite
+// makeHeroIcon() output above, never reused here — variants intentionally keep the plain crop.)
+const ICON_FILES = ['icon-180.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-192.png', 'icon-maskable-512.png'];
+const iconCacheBySource = new Map(); // resolved title.png path -> docs/<id> dir it was first computed into
+
 for (const id of ids) {
   console.log(`▶ variant ${id} → docs/${id}/`);
   execSync('npm run build', { stdio: 'inherit', cwd: ROOT, env: { ...process.env, VITE_VARIANT: id } });
 
-  // The variant's gametext.txt is a complete file — REPLACE the base gametext vite copied into docs/<id>/.
-  const gametext = join(CONTENT_OVERRIDES, id, 'gametext.txt');
-  if (existsSync(gametext)) {
-    cpSync(gametext, join(DOCS, id, 'gametext.txt'));
-  }
-  // Overlay the variant's custom-art PNGs into docs/<id>/custom-art/. Vite copies public/custom-art/
-  // (the BASE art) into every variant folder; at runtime BootScene fetches custom-art/<file>.png and
-  // swaps it in over the inlined art. Without this overlay the variant would show the base heroes.
-  const artDir = join(CONTENT_OVERRIDES, id, 'custom-art');
-  if (existsSync(artDir)) {
-    for (const f of readdirSync(artDir)) {
-      if (f.endsWith('.png')) cpSync(join(artDir, f), join(DOCS, id, 'custom-art', f));
-    }
-  }
+  // The variant's gametext.txt is a complete file — REPLACE the base gametext vite copied into
+  // docs/<id>/ — plus overlay its custom-art PNGs (vite copies public/custom-art/, the BASE art,
+  // into every variant folder; at runtime BootScene fetches custom-art/<file>.png and swaps it in
+  // over the inlined art — without this overlay the variant would show the base heroes).
+  overlayVariantContent(CONTENT_OVERRIDES, id, join(DOCS, id));
+  const gametext = join(CONTENT_OVERRIDES, id, 'gametext.txt'); // re-read below for its title
 
-  // Home Screen / install icon from this variant's title.png (falls back to base).
-  makeIcons(titlePngFor(id), join(DOCS, id));
+  // Home Screen / install icon from this variant's title.png (falls back to base) — reuse a
+  // prior variant's output if its source resolved to the exact same file.
+  const iconSrc = titlePngFor(id);
+  const cachedDir = iconCacheBySource.get(iconSrc);
+  if (cachedDir) {
+    for (const f of ICON_FILES) cpSync(join(cachedDir, f), join(DOCS, id, f));
+  } else {
+    makeIcons(iconSrc, join(DOCS, id));
+    iconCacheBySource.set(iconSrc, join(DOCS, id));
+  }
   stampSW(join(DOCS, id));
   // Android install label = this variant's gameTitle (falls back to base).
   const title = readGameTitle(gametext) || baseTitle;

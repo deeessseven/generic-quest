@@ -192,25 +192,38 @@ export const GT = {
   shareUrl: '', // link the share/copy sends; '' = the page's own URL
 };
 
+// Placeholder keys resolveStory understands — single-pass regex + lookup below (NOT a chain of
+// sequential .replace() calls). A chain re-scans the STRING RESULT of the previous replace, so a
+// player-chosen hero name that happens to equal another placeholder's literal text (e.g. a hero
+// named "{boss1}" — 7 chars, well under the 12-char name cap) would get inserted by the hero1
+// pass and then immediately clobbered by the later boss1 pass. A single `.replace(regex, fn)`
+// call never re-scans its own replacement text, so a chosen name can't collide with a later
+// substitution — bug found + fixed 2026-07-23.
+const PLACEHOLDER_RE = /\{(hero1|hero2|hero3|boss1|boss2|boss3|smallEnemy1|smallEnemy2|mediumEnemy1|bigEnemy1|town|dungeon|bootcamp|theme1|theme2|theme3)\}/g;
+
 // Substitute all story placeholders in text using current GT values and party names.
 export function resolveStory(text, party = []) {
-  return text
-    .replace(/\{hero1\}/g,    party[0]?.name ?? GT.hero1Name)
-    .replace(/\{hero2\}/g,    party[1]?.name ?? GT.hero2Name)
-    .replace(/\{hero3\}/g,    party[2]?.name ?? GT.hero3Name)
-    .replace(/\{boss1\}/g,       GT.boss1Name)
-    .replace(/\{boss2\}/g,       GT.boss2Name)
-    .replace(/\{boss3\}/g,       GT.boss3Name)
-    .replace(/\{smallEnemy1\}/g, GT.smallEnemy1Name)
-    .replace(/\{smallEnemy2\}/g, GT.smallEnemy2Name)
-    .replace(/\{mediumEnemy1\}/g,GT.mediumEnemy1Name)
-    .replace(/\{bigEnemy1\}/g,   GT.bigEnemy1Name)
-    .replace(/\{town\}/g,     GT.placeTown)
-    .replace(/\{dungeon\}/g,  GT.placeDungeon)
-    .replace(/\{bootcamp\}/g, GT.placeBootcamp)
-    .replace(/\{theme1\}/g,   GT.theme1)
-    .replace(/\{theme2\}/g,   GT.theme2)
-    .replace(/\{theme3\}/g,   GT.theme3);
+  return text.replace(PLACEHOLDER_RE, (match, key) => {
+    switch (key) {
+      case 'hero1':        return party[0]?.name ?? GT.hero1Name;
+      case 'hero2':        return party[1]?.name ?? GT.hero2Name;
+      case 'hero3':        return party[2]?.name ?? GT.hero3Name;
+      case 'boss1':        return GT.boss1Name;
+      case 'boss2':        return GT.boss2Name;
+      case 'boss3':        return GT.boss3Name;
+      case 'smallEnemy1':  return GT.smallEnemy1Name;
+      case 'smallEnemy2':  return GT.smallEnemy2Name;
+      case 'mediumEnemy1': return GT.mediumEnemy1Name;
+      case 'bigEnemy1':    return GT.bigEnemy1Name;
+      case 'town':         return GT.placeTown;
+      case 'dungeon':      return GT.placeDungeon;
+      case 'bootcamp':     return GT.placeBootcamp;
+      case 'theme1':       return GT.theme1;
+      case 'theme2':       return GT.theme2;
+      case 'theme3':       return GT.theme3;
+      default:             return match; // unreachable given the regex alternation above
+    }
+  });
 }
 
 // Parse key=value lines from gametext.txt and update GT in place.
@@ -223,6 +236,6 @@ export function applyText(rawText) {
     if (eq < 0) continue;
     const key = trimmed.slice(0, eq).trim();
     const val = trimmed.slice(eq + 1).trim().replace(/\\n/g, '\n');
-    if (key && key in GT) GT[key] = val;
+    if (key && Object.hasOwn(GT, key)) GT[key] = val;
   }
 }

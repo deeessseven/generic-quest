@@ -40,7 +40,7 @@ export class WorldScene extends Phaser.Scene {
     const { width, height } = this.scale;
 
     // Background map — use custom image if uploaded, otherwise procedural terrain
-    if (BackgroundStore.hasCustom('bg_world')) {
+    if (BackgroundStore.hasCustom('bg_world') && this.textures.exists('bg_world')) {
       this.add.image(width / 2, height / 2, 'bg_world').setDisplaySize(width, height);
     } else {
       const bg = this.add.graphics();
@@ -178,7 +178,7 @@ export class WorldScene extends Phaser.Scene {
     // Icon — custom uploaded image or default circle + symbol
     let hitTarget;
     const iconKey = `icon_${loc.id}`;
-    if (BackgroundStore.hasCustom(iconKey)) {
+    if (BackgroundStore.hasCustom(iconKey) && this.textures.exists(iconKey)) {
       hitTarget = this.add.image(x, y, iconKey)
         .setDisplaySize(40, 40)
         .setInteractive({ useHandCursor: true });

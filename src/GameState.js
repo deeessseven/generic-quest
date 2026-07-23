@@ -1,4 +1,4 @@
-import { createHero, levelUp } from './data/characters.js';
+import { createHero, levelUp, CHARACTER_DEFS } from './data/characters.js';
 import { ITEM_DEFS } from './data/items.js';
 import { GT } from './data/GameText.js';
 import { SAVE_SCOPE } from './saveScope.js';
@@ -90,9 +90,21 @@ export const GameState = {
       // back to the default 'normal': old saves lack the field and must derive it from
       // their enemyMult (an old Hard save is 2.0; defaulting would relabel it Normal).
       const defaults = defaultState();
+      // Same idea for each PARTY MEMBER: a saved hero from an older version is trusted
+      // wholesale by a plain array copy, so a hero-level field added since (see equipWeapon's
+      // weaponBonus/weaponId note above) stays undefined on old saves instead of getting the
+      // same defaulting safety net. Merge each saved hero over a freshly-built template of the
+      // SAME role (matched by the hero's own saved `id`, e.g. 'hero1Role') so new fields get
+      // their real starting value — the save's own fields still always win.
+      const mergedParty = (parsed.party || defaults.party).map((savedHero, i) => {
+        const roleId = savedHero?.id;
+        const template = (roleId && CHARACTER_DEFS[roleId]) ? createHero(roleId) : defaults.party[i];
+        return template ? { ...template, ...savedHero } : savedHero;
+      });
       this.data = {
         ...defaults,
         ...parsed,
+        party: mergedParty,
         progress: { ...defaults.progress, ...(parsed.progress || {}) },
         difficultyId: parsed.difficultyId || this._idFromMult(parsed.enemyMult ?? 1.5),
       };
@@ -143,12 +155,15 @@ export const GameState = {
   },
   // Both take an optional (mult, id) pair for save-slot display; with no args they read the
   // live state. id wins when present; old saves have no id and resolve from the mult.
+  _resolveDifficultyId(mult, id) {
+    return id ?? (mult === undefined ? this.difficultyId : this._idFromMult(mult));
+  },
   getDifficultyLabel(mult, id) {
-    const did = id ?? (mult === undefined ? this.difficultyId : this._idFromMult(mult));
+    const did = this._resolveDifficultyId(mult, id);
     return { easy: 'Easy', normal: 'Normal', hard: 'Hard', insane: 'Insane' }[did] || 'Normal';
   },
   getDifficultyColor(mult, id) {
-    const did = id ?? (mult === undefined ? this.difficultyId : this._idFromMult(mult));
+    const did = this._resolveDifficultyId(mult, id);
     return { easy: '#88ff88', normal: '#aaddff', hard: '#ffaaaa', insane: '#ff66ff' }[did] || '#aaddff';
   },
 

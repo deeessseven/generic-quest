@@ -12,9 +12,10 @@
 //   node scripts/build-app.mjs <variant>  → that variant (e.g. val, ethan, van, fifi) → www/
 
 import { execSync } from 'node:child_process';
-import { existsSync, readdirSync, cpSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { overlayVariantContent } from './variantOverlay.mjs';
 
 const ROOT     = join(dirname(fileURLToPath(import.meta.url)), '..');
 const WWW      = join(ROOT, 'www');
@@ -42,14 +43,7 @@ execSync('npm run build', { stdio: 'inherit', cwd: ROOT, env });
 // runtime custom-art fetch and gametext match the variant's inlined bundle. Base needs no overlay
 // (Vite already copied public/gametext.txt + public/custom-art into www/).
 if (variant) {
-  const gt = join(CONTENT, variant, 'gametext.txt');
-  if (existsSync(gt)) cpSync(gt, join(WWW, 'gametext.txt'));
-  const art = join(CONTENT, variant, 'custom-art');
-  if (existsSync(art)) {
-    for (const f of readdirSync(art)) {
-      if (f.endsWith('.png')) cpSync(join(art, f), join(WWW, 'custom-art', f));
-    }
-  }
+  overlayVariantContent(CONTENT, variant, WWW);
 }
 
 console.log(`✓ www/ ready (${variant || 'base'}) — run "npx cap sync" next`);

@@ -16,7 +16,7 @@ export class TitleScene extends Phaser.Scene {
     const { width, height } = this.scale;
 
     // Background — custom upload or procedural starfield
-    if (BackgroundStore.hasCustom('bg_title')) {
+    if (BackgroundStore.hasCustom('bg_title') && this.textures.exists('bg_title')) {
       this.add.image(width / 2, height / 2, 'bg_title')
         .setDisplaySize(width, height)
         .setDepth(-1);

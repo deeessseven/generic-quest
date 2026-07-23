@@ -7,7 +7,7 @@ import { SoundSystem } from '../audio/SoundSystem.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { levelUp } from '../data/characters.js';
-import { openPause } from '../ui/backHandler.js';
+import { openPause, pushBackModal, popBackModal } from '../ui/backHandler.js';
 import { GT, resolveStory } from '../data/GameText.js';
 
 function getFloors() {
@@ -76,7 +76,7 @@ export class DungeonScene extends Phaser.Scene {
     const { width, height } = this.scale;
     const floorDef = this.FLOORS[this.floor] || this.FLOORS[2];
     // Background — use custom image if uploaded, otherwise procedural dungeon room
-    if (BackgroundStore.hasCustom(floorDef.bgKey)) {
+    if (BackgroundStore.hasCustom(floorDef.bgKey) && this.textures.exists(floorDef.bgKey)) {
       this.add.image(width / 2, height / 2, floorDef.bgKey).setDisplaySize(width, height);
     } else {
       const g = this.add.graphics();
@@ -571,9 +571,15 @@ export class DungeonScene extends Phaser.Scene {
 
     let yesBtn, yesLabel, yesZone, noBtn, noLabel, noZone;
     const dismiss = () => {
+      popBackModal(this, closeViaBack);
       [overlay, box, prompt, sub, tip, yesBtn, yesLabel, yesZone, noBtn, noLabel, noZone].forEach(o => o.destroy());
       this.isBattling = false;
     };
+    // Android/PWA Back acts like "No" (cancel) — closes the dialog and refreshes the floor,
+    // instead of falling through to handleBackButton() and opening Pause on top of a still-open
+    // boss confirm — bug found + fixed 2026-07-23.
+    const closeViaBack = () => { dismiss(); this.buildFloor(); };
+    pushBackModal(this, closeViaBack);
 
     yesBtn = this.add.graphics().setDepth(51);
     yesBtn.fillStyle(0x336633, 1);

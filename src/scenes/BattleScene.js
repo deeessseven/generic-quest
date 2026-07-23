@@ -1,7 +1,7 @@
 import Phaser from 'phaser';
 import { GameState } from '../GameState.js';
 import { SPELL_DEFS, ENEMY_ACTIONS, HERO_SPECIALS } from '../data/spells.js';
-import { ITEM_DEFS, useItem } from '../data/items.js';
+import { useItem, itemPartyLockReason } from '../data/items.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { SoundSystem } from '../audio/SoundSystem.js';
 import { levelUp } from '../data/characters.js';
@@ -613,17 +613,14 @@ export class BattleScene extends Phaser.Scene {
     }
 
     items.forEach(({ item, qty }, i) => {
-      const alive = GameState.party.filter(h => h.status !== 'dead');
-      const reviveLocked    = item.type === 'revive' && !GameState.party.some(h => h.status === 'dead');
-      const healLocked      = item.type === 'heal' && alive.every(h => h.hp >= h.maxHp);
-      const mpLocked        = item.type === 'mp' && alive.every(h => h.mp >= h.maxMp);
-      const statusLocked    = item.type === 'cure_status' && item.cures?.includes('poison') && !alive.some(h => h.status === 'poison');
-      const isDisabled      = reviveLocked || healLocked || mpLocked || statusLocked;
-      const disabledReason  = reviveLocked ? 'No ally is KO\'d'
-        : healLocked   ? 'All allies HP is already full'
-        : mpLocked     ? 'All allies MP is already full'
-        : statusLocked ? 'No ally is poisoned'
-        : '';
+      const lock = itemPartyLockReason(item, GameState.party);
+      const isDisabled      = !!lock;
+      const disabledReason  = {
+        revive: 'No ally is KO\'d',
+        heal:   'All allies HP is already full',
+        mp:     'All allies MP is already full',
+        status: 'No ally is poisoned'
+      }[lock] || '';
 
       const row = this.add.container(4, 22 + i * 54);
       const bg = this.add.graphics();
@@ -2075,33 +2072,6 @@ export class BattleScene extends Phaser.Scene {
     }
   }
 
-  // Purple spark burst underneath a hero sprite (boss aura tick visual)
-  _colorAuraSparks(heroIdx) {
-    const sp = this.heroSprites?.[heroIdx];
-    if (!sp) return;
-    const cx = sp.x;
-    const baseY = sp.y + (sp.displayHeight ?? 44) * 0.5 + 4;
-    for (let i = 0; i < 10; i++) {
-      const g = this.add.graphics().setDepth(sp.depth + 2);
-      const color = Math.random() < 0.6 ? 0xaa44ff : 0xdd88ff;
-      const sz = 2 + Math.random() * 3;
-      g.fillStyle(color, 1);
-      g.fillCircle(0, 0, sz);
-      g.x = cx + (Math.random() - 0.5) * 36;
-      g.y = baseY + Math.random() * 8;
-      this.tweens.add({
-        targets: g,
-        x: g.x + (Math.random() - 0.5) * 24,
-        y: g.y + 18 + Math.random() * 18,
-        alpha: 0, scaleX: 0.2, scaleY: 0.2,
-        duration: 380 + Math.random() * 200,
-        delay: Math.random() * 100,
-        ease: 'Quad.easeOut',
-        onComplete: () => { try { g.destroy(); } catch(e){} }
-      });
-    }
-  }
-
   // Dramatic shake of the boss sprite when it activates its aura — 4-direction rumble
   _applyAuraDrain(onDone) {
     if (!this._bossAura) { onDone(); return; }
@@ -2372,22 +2342,6 @@ export class BattleScene extends Phaser.Scene {
   }
 
   // ── Visual FX ────────────────────────────────────────────────────────
-  _heroGlowFlash(heroIdx, color, duration) {
-    const sprite = this.heroSprites?.[heroIdx];
-    if (!sprite) return;
-    const g = this.add.graphics().setDepth(sprite.depth + 1);
-    g.fillStyle(color, 0.5);
-    g.fillEllipse(0, 0, 68, 78);
-    g.lineStyle(2, color, 0.9);
-    g.strokeEllipse(0, 0, 68, 78);
-    g.x = sprite.x; g.y = sprite.y;
-    this.tweens.add({
-      targets: g, alpha: 0,
-      duration, ease: 'Quad.easeOut',
-      onComplete: () => { try { g.destroy(); } catch(e) {} }
-    });
-  }
-
   _enemyDodgeAnim(enemyIdx) {
     const sp = this.enemySprites?.[enemyIdx];
     if (!sp) return;

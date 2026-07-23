@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { GameState } from '../GameState.js';
-import { ITEM_DEFS, useItem } from '../data/items.js';
+import { useItem, itemPartyLockReason, canUseItemOnHero } from '../data/items.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { SoundSystem } from '../audio/SoundSystem.js';
 import { AvatarStore } from '../data/AvatarStore.js';
@@ -8,6 +8,7 @@ import { BackgroundStore } from '../data/BackgroundStore.js';
 import { WEAPON_DEFS } from '../data/weapons.js';
 import { GT } from '../data/GameText.js';
 import { showQuitConfirm } from '../ui/QuitConfirm.js';
+import { pushBackModal, popBackModal } from '../ui/backHandler.js';
 
 function getAvatarList() {
   return [
@@ -390,21 +391,14 @@ export class MenuScene extends Phaser.Scene {
           fontSize: '20px', color: '#88ffaa', fontFamily: 'monospace'
         }).setOrigin(1, 0).setInteractive({ useHandCursor: true });
         useBtn.on('pointerdown', () => {
-          if (item.type === 'revive' && !GameState.party.some(h => h.status === 'dead')) {
-            this._showToast('Unusable —\nno knocked out (KO\'d) allies.');
-            return;
-          }
-          const alive = GameState.party.filter(h => h.status !== 'dead');
-          if (item.type === 'heal' && alive.every(h => h.hp >= h.maxHp)) {
-            this._showToast('Unusable — ALL allies have full HP.');
-            return;
-          }
-          if (item.type === 'mp' && alive.every(h => h.mp >= h.maxMp)) {
-            this._showToast('Unusable — ALL allies have full MP.');
-            return;
-          }
-          if (item.type === 'cure_status' && item.cures?.includes('poison') && !alive.some(h => h.status === 'poison')) {
-            this._showToast('Unusable — no ally is poisoned.');
+          const lock = itemPartyLockReason(item, GameState.party);
+          if (lock) {
+            this._showToast({
+              revive: 'Unusable —\nno knocked out (KO\'d) allies.',
+              heal:   'Unusable — ALL allies have full HP.',
+              mp:     'Unusable — ALL allies have full MP.',
+              status: 'Unusable — no ally is poisoned.'
+            }[lock]);
             return;
           }
           this._showHeroSelector(item);
@@ -451,12 +445,7 @@ export class MenuScene extends Phaser.Scene {
     GameState.party.forEach((hero, i) => {
       const btnY = panelY + 52 + i * 74;
       const isDead = hero.status === 'dead';
-      const canUse = item.type === 'revive'
-        ? isDead
-        : !isDead
-          && !(item.type === 'heal' && hero.hp >= hero.maxHp)
-          && !(item.type === 'mp'   && hero.mp >= hero.maxMp)
-          && !(item.type === 'cure_status' && !item.cures?.includes(hero.status));
+      const canUse = canUseItemOnHero(item, hero);
 
       const btnBg = this.add.graphics();
       const drawBtn = (hov) => {
@@ -669,10 +658,16 @@ export class MenuScene extends Phaser.Scene {
 
     let noBg, noLbl, noHit, yesBg, yesLbl, yesHit;
     const destroy = () => {
+      popBackModal(this, closeViaBack);
       overlay.destroy(); box.destroy(); msg.destroy(); sub.destroy();
       noBg.destroy(); noLbl.destroy(); noHit.destroy();
       yesBg.destroy(); yesLbl.destroy(); yesHit.destroy();
     };
+    // Android/PWA Back acts like "Cancel" — runs onNo's cleanup (removes the file-picker DOM
+    // element + focus listener) instead of falling through to handleBackButton() and leaving
+    // this dialog open underneath the closed Menu — bug found + fixed 2026-07-23.
+    const closeViaBack = () => { destroy(); onNo(); };
+    pushBackModal(this, closeViaBack);
 
     noBg  = this.add.graphics().setDepth(52);
     noLbl = this.add.text(noX + noW / 2, btnY, 'Cancel', {

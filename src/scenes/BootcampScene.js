@@ -6,6 +6,7 @@ import { MusicSystem } from '../audio/MusicSystem.js';
 import { GT } from '../data/GameText.js';
 import { animateHero as _animateHero } from '../ui/BattleAnimations.js';
 import { spellFX } from '../ui/spellFX.js';
+import { openPause } from '../ui/backHandler.js';
 
 // Party order: hero1Role=0, hero2Role=1, hero3Role=2
 const DUMMY_HP = 80;
@@ -150,6 +151,11 @@ const STEPS = [
 
 export class BootcampScene extends Phaser.Scene {
   constructor() { super('BootcampScene'); }
+
+  // Android Back in Bootcamp → Game Paused overlay (Resume / Quit), same as every other
+  // gameplay scene (Town/Dungeon). Previously undefined, so Back did nothing anywhere in the
+  // tutorial's many submenus — bug found + fixed 2026-07-23.
+  handleBackButton() { openPause(this); }
 
   create() {
     const { width: W, height: H } = this.scale;
@@ -405,17 +411,28 @@ export class BootcampScene extends Phaser.Scene {
     });
   }
 
+  // Builds the lookup Map + compiled RegExp from `this._nameMap` once and reuses it — this used
+  // to rebuild both from scratch on every single call, and showMessage() calls _subNames() on
+  // every tutorial message shown (dozens of times per playthrough) even though _nameMap never
+  // changes after create(). Cached keyed on the _nameMap reference so it still rebuilds correctly
+  // if that ever changes. Fixed 2026-07-23 — behavior/output is unchanged, only the recompute is.
   _subNames(text) {
     if (!text || !this._nameMap) return text;
-    const lookup = new Map();
-    const parts = [];
-    for (const [from, to] of this._nameMap) {
-      if (to == null) continue;
-      lookup.set(from, to);
-      parts.push(from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+    if (this._subNamesCache?.map !== this._nameMap) {
+      const lookup = new Map();
+      const parts = [];
+      for (const [from, to] of this._nameMap) {
+        if (to == null) continue;
+        lookup.set(from, to);
+        parts.push(from.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+      }
+      const re = parts.length
+        ? new RegExp(`(?<![\\p{L}\\p{N}])(${parts.join('|')})(?![\\p{L}\\p{N}])`, 'gu')
+        : null;
+      this._subNamesCache = { map: this._nameMap, lookup, re };
     }
-    if (!parts.length) return text;
-    const re = new RegExp(`(?<![\\p{L}\\p{N}])(${parts.join('|')})(?![\\p{L}\\p{N}])`, 'gu');
+    const { lookup, re } = this._subNamesCache;
+    if (!re) return text;
     return text.replace(re, m => lookup.get(m) ?? m);
   }
 

@@ -6,7 +6,7 @@ import { fitTextWidth } from '../ui/fitText.js';
 import { MusicSystem } from '../audio/MusicSystem.js';
 import { BackgroundStore } from '../data/BackgroundStore.js';
 import { GT } from '../data/GameText.js';
-import { openPause } from '../ui/backHandler.js';
+import { openPause, pushBackModal, popBackModal } from '../ui/backHandler.js';
 
 const INN_COST = 60;
 
@@ -20,7 +20,7 @@ export class TownScene extends Phaser.Scene {
     MusicSystem.play('town');
     const { width, height } = this.scale;
 
-    if (BackgroundStore.hasCustom('bg_town')) {
+    if (BackgroundStore.hasCustom('bg_town') && this.textures.exists('bg_town')) {
       this.add.image(width / 2, height / 2, 'bg_town').setDisplaySize(width, height);
     } else {
       this.bg(width, height);
@@ -449,7 +449,11 @@ export class TownScene extends Phaser.Scene {
     const inner = this.add.container(32, 100);
     this.overlay.add(inner);
 
-    const close = () => { this.overlay.setVisible(false); this.overlay.removeAll(true); };
+    // Register with the Back-button modal stack (backHandler.js) so Android/PWA Back closes
+    // this overlay first, instead of falling through to handleBackButton() and opening Pause
+    // on top of a still-open shop/inn panel — bug found + fixed 2026-07-23.
+    const close = () => { popBackModal(this, close); this.overlay.setVisible(false); this.overlay.removeAll(true); };
+    pushBackModal(this, close);
     buildFn(inner, close);
 
     const closeBtn = this.add.text(width - 30, 68, '✕ Close', {

@@ -195,14 +195,22 @@ export function makeIcons(srcTitlePng, outDir) {
 // template-matching against that shipped icon (measured 2026-07-22, verified by re-rendering and
 // confirming an exact visual match before trusting the numbers). Do not hand-tune these without
 // re-verifying the same way — the fit is sensitive (this is hand-painted art, not a formula).
+// 2026-07-23: all three feet fell past the 480×480 icon canvas bottom edge (e.g. hero2's
+// bottom = 225 + 502*0.528 = 490 > 480) — the composite blit clips anything past the canvas,
+// so feet were silently cut off. Fix: shift every hero's oy up by the same amount (uy below)
+// so the group translates as a block — each hero's bottom edge relative to the OTHERS is
+// unchanged, only the whole trio moves up. Shift = 33% of the tallest hero's rendered opaque
+// height at ICON_HERO_SCALE (hero2: 300px opaque height in its own 512 canvas × 0.528 baseline
+// scale × 1.2 heroScale ≈ 190px on the icon canvas; 33% of that ≈ 63px).
+const HERO_UP_SHIFT = 63;
 const HERO_BASELINE = {
   // s = scale of the raw 512×512 hero canvas; ox/oy = placement of that (un-padded) canvas's
   // top-left corner in the 480×480 icon; bmaxY = the hero's own opaque bbox bottom (its "feet"),
   // measured within its own 512 canvas — used to anchor growth by the VISIBLE sprite, not the
   // transparent canvas padding around it.
-  hero1: { s: 0.524, ox: 2,   oy: 225, bx: 97,  bw: 273, bmaxY: 492 },
-  hero2: { s: 0.528, ox: 121, oy: 225, bx: 162, bw: 226, bmaxY: 502 },
-  hero3: { s: 0.540, ox: 239, oy: 219, bx: 114, bw: 282, bmaxY: 508 },
+  hero1: { s: 0.524, ox: 2,   oy: 225 - HERO_UP_SHIFT, bx: 97,  bw: 273, bmaxY: 492 },
+  hero2: { s: 0.528, ox: 121, oy: 225 - HERO_UP_SHIFT, bx: 162, bw: 226, bmaxY: 502 },
+  hero3: { s: 0.540, ox: 239, oy: 219 - HERO_UP_SHIFT, bx: 114, bw: 282, bmaxY: 508 },
 };
 const OUTLINE_R = 8; // matches TitleScene.js's titleHeroTexture() outline radius, same source art
 

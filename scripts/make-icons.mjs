@@ -149,9 +149,13 @@ function encodePNG(width, height, rgba) {
   return Buffer.concat([sig, chunk('IHDR', ihdr), chunk('IDAT', idatData), chunk('IEND', Buffer.alloc(0))]);
 }
 
-// Build a maskable variant: the icon scaled into the center safe zone (~80%) on a solid
-// background, so Android's adaptive-icon crop only eats the padding, never the artwork.
-function padToMaskable(square, side, bg, scale = 0.8) {
+// Build a maskable variant: the icon scaled into a center safe zone on a solid background,
+// so a shape-masking launcher only eats the padding, never the artwork. 2026-07-23: many
+// Android/Chrome PWA installs don't actually shape-crop this icon, so the old 80% scale's
+// 20%-total padding showed up as a visible dark border on all 4 sides. Tightened to 92% —
+// still a small buffer for launchers that do mask, but the border is much less visible for
+// ones that don't.
+function padToMaskable(square, side, bg, scale = 0.92) {
   const inner = Math.max(1, Math.round(side * scale));
   const innerImg = resize(square, side, side, inner, inner);
   const out = Buffer.alloc(side * side * 4);
@@ -203,14 +207,20 @@ export function makeIcons(srcTitlePng, outDir) {
 // height at ICON_HERO_SCALE (hero2: 300px opaque height in its own 512 canvas × 0.528 baseline
 // scale × 1.2 heroScale ≈ 190px on the icon canvas; 33% of that ≈ 63px).
 const HERO_UP_SHIFT = 63;
+// 2026-07-23: hero1/hero2 and hero2/hero3's opaque bboxes (which include weapons/staff glow,
+// not just the character body) overlapped by ~16px and ~53px respectively — outlines were
+// touching. Nudge apart horizontally: hero1 left, hero3 right (both have canvas room to
+// spare), hero2 left a little too (helps the hero2/hero3 gap without needing hero3 to move
+// as far right, since hero3 only has ~12px of margin before its staff glow hits the edge).
+const HERO_H_SHIFT = { hero1: -16, hero2: -6, hero3: 5 };
 const HERO_BASELINE = {
   // s = scale of the raw 512×512 hero canvas; ox/oy = placement of that (un-padded) canvas's
   // top-left corner in the 480×480 icon; bmaxY = the hero's own opaque bbox bottom (its "feet"),
   // measured within its own 512 canvas — used to anchor growth by the VISIBLE sprite, not the
   // transparent canvas padding around it.
-  hero1: { s: 0.524, ox: 2,   oy: 225 - HERO_UP_SHIFT, bx: 97,  bw: 273, bmaxY: 492 },
-  hero2: { s: 0.528, ox: 121, oy: 225 - HERO_UP_SHIFT, bx: 162, bw: 226, bmaxY: 502 },
-  hero3: { s: 0.540, ox: 239, oy: 219 - HERO_UP_SHIFT, bx: 114, bw: 282, bmaxY: 508 },
+  hero1: { s: 0.524, ox: 2   + HERO_H_SHIFT.hero1, oy: 225 - HERO_UP_SHIFT, bx: 97,  bw: 273, bmaxY: 492 },
+  hero2: { s: 0.528, ox: 121 + HERO_H_SHIFT.hero2, oy: 225 - HERO_UP_SHIFT, bx: 162, bw: 226, bmaxY: 502 },
+  hero3: { s: 0.540, ox: 239 + HERO_H_SHIFT.hero3, oy: 219 - HERO_UP_SHIFT, bx: 114, bw: 282, bmaxY: 508 },
 };
 const OUTLINE_R = 8; // matches TitleScene.js's titleHeroTexture() outline radius, same source art
 

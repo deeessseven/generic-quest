@@ -52,7 +52,14 @@ export class MenuScene extends Phaser.Scene {
     if (underlying) underlying.input.enabled = false;
     this.events.once('shutdown', () => {
       const ul = this.scene.get(this.returnScene);
-      if (ul) {
+      // Quit stops the underlying scene BEFORE stopping MenuScene (see quitBg's
+      // pointerdown below), so by the time this fires ul may already be torn down —
+      // its display objects destroyed. Calling refreshStatusBar() on it then throws
+      // deep in Phaser's text renderer (destroyed texture), which aborts the scene
+      // manager's queue mid-flight and leaves NO scene active — a black screen, since
+      // the queued start('TitleScene') right after never runs. Only touch ul if it's
+      // still genuinely running (the normal close-via-X/Back case).
+      if (ul && ul.scene.isActive()) {
         ul.input.enabled = true;
         ul.refreshStatusBar?.();
       }

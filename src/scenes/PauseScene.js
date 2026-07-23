@@ -75,9 +75,6 @@ export class PauseScene extends Phaser.Scene {
         if (k !== 'PauseScene' && k !== 'TitleScene' && k !== 'BootScene') this.scene.stop(k);
       });
       this.scene.start('TitleScene', {});
-      // Stop PauseScene itself last — otherwise it stays alive with its camera
-      // still faded to black (fade() doesn't auto-reset), painting over the title.
-      this.scene.stop();
     });
   }
 }

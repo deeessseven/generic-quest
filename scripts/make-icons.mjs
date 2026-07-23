@@ -274,7 +274,11 @@ function blitAlpha(canvas, cw, ch, src, sw, sh, dx, dy) {
 // revealing more foreground at the bottom) and heroScale (multiplies each hero's baseline scale,
 // anchored so its OWN bottom-edge pixel + horizontal center stay fixed — i.e. it grows upward/
 // outward only, never shifting position). Writes the same output set as makeIcons().
+// `heroDir` is either a plain directory (hero1/2/3.png live directly inside it — the base-game
+// case) or a resolver function `(name) => absolutePath` for callers that need per-hero fallback,
+// e.g. a variant that overrides hero2.png but not hero1/hero3.png (see build-variants.mjs).
 export function makeHeroIcon(srcTitlePng, heroDir, outDir, bgShiftFrac = 0, heroScale = 1) {
+  const resolveHero = typeof heroDir === 'function' ? heroDir : (name) => join(heroDir, `${name}.png`);
   const { width, height, rgba } = decodePNG(readFileSync(srcTitlePng));
   const side = Math.min(width, height);
   const x = Math.floor((width - side) / 2);
@@ -282,19 +286,28 @@ export function makeHeroIcon(srcTitlePng, heroDir, outDir, bgShiftFrac = 0, hero
   const square = cropSquare(rgba, width, height, x, y, side);
 
   for (const [name, b] of Object.entries(HERO_BASELINE)) {
-    const hero = decodePNG(readFileSync(join(heroDir, `${name}.png`)));
-    const { rgba: outlined, side: oSide } = addOutline(hero.rgba, hero.width, OUTLINE_R);
-    const newS = b.s * heroScale;
+    const hero = decodePNG(readFileSync(resolveHero(name)));
+    // HERO_BASELINE's s/bx/bw/bmaxY were measured on a 512×512 canvas (the base heroes' native
+    // size). Variant hero art isn't guaranteed to be 512×512 (e.g. some are 1280×1280) — rescale
+    // the native-space numbers (bbox + outline radius) by nativeScale, and shrink newS by the same
+    // factor, so the final icon-space placement/size comes out identical regardless of the actual
+    // source resolution. See make-icons.mjs git history 2026-07-23 for the bug this fixes (bigger
+    // art was rendered ~2.5x oversized and thrown off-canvas).
+    const nativeScale = hero.width / 512;
+    const R = Math.round(OUTLINE_R * nativeScale);
+    const { rgba: outlined, side: oSide } = addOutline(hero.rgba, hero.width, R);
+    const newS = (b.s * heroScale) / nativeScale;
+    const bx = b.bx * nativeScale, bw = b.bw * nativeScale, bmaxY = b.bmaxY * nativeScale;
     const oldBottom = b.oy + b.bmaxY * b.s;
     const oldCenterX = b.ox + (b.bx + b.bw / 2) * b.s;
-    const newOy = oldBottom - b.bmaxY * newS;
-    const newOx = oldCenterX - (b.bx + b.bw / 2) * newS;
+    const newOy = oldBottom - bmaxY * newS;
+    const newOx = oldCenterX - (bx + bw / 2) * newS;
     const dSide = Math.round(oSide * newS);
     const resized = resize(outlined, oSide, oSide, dSide, dSide);
-    // newOx/newOy target the un-padded 512 canvas; shift by -OUTLINE_R*newS so the CHARACTER (not
+    // newOx/newOy target the un-padded native canvas; shift by -R*newS so the CHARACTER (not
     // the outline canvas) lands at the intended spot — the outline then extends outward from it.
     blitAlpha(square, side, side, resized, dSide, dSide,
-      Math.round(newOx - OUTLINE_R * newS), Math.round(newOy - OUTLINE_R * newS));
+      Math.round(newOx - R * newS), Math.round(newOy - R * newS));
   }
 
   for (const size of OUT_SIZES) {

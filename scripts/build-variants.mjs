@@ -27,7 +27,7 @@ import { execSync } from 'node:child_process';
 import { existsSync, readdirSync, statSync, cpSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { makeIcons, makeHeroIcon, ICON_BG_SHIFT, ICON_HERO_SCALE } from './make-icons.mjs';
+import { makeHeroIcon, ICON_BG_SHIFT, ICON_HERO_SCALE } from './make-icons.mjs';
 import { overlayVariantContent } from './variantOverlay.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -73,12 +73,20 @@ function titlePngFor(id) {
   return existsSync(override) ? override : join(PUBLIC, 'custom-art', 'title.png');
 }
 
+// Per-hero art for a variant's icon: its own hero<N>.png override if present, else the base one.
+// Variants commonly override the hero portraits (personalized party) without touching title.png,
+// so this resolves independently per file rather than all-or-nothing like titlePngFor above.
+function heroPngFor(id, name) {
+  const override = join(CONTENT_OVERRIDES, id, 'custom-art', `${name}.png`);
+  return existsSync(override) ? override : join(PUBLIC, 'custom-art', `${name}.png`);
+}
+
 // 1. Base build → docs/ (emptyOutDir true clears any stale variant subfolders first).
 console.log('▶ base → docs/');
 execSync('npm run build', { stdio: 'inherit', cwd: ROOT });
 // Regenerate base icons from current source (so a base-art change can't leave a stale base icon),
-// then bake the base title into the manifest. Base gets the hero-composite icon (background +
-// party row); variants keep the plain title.png crop via makeIcons() below.
+// then bake the base title into the manifest. Every variant below gets the same hero-composite
+// treatment (background + party row), each using its own hero art where it overrides any.
 makeHeroIcon(join(PUBLIC, 'custom-art', 'title.png'), join(PUBLIC, 'custom-art'), DOCS, ICON_BG_SHIFT, ICON_HERO_SCALE);
 stampSW(DOCS);
 const baseTitle = readGameTitle(join(PUBLIC, 'gametext.txt'));
@@ -93,14 +101,14 @@ const ids = readdirSync(SRC_VARIANTS).filter(
     existsSync(join(SRC_VARIANTS, id, 'variant.js')),
 );
 
-// makeIcons() output is a pure function of its source title.png (5 fixed filenames — see
-// make-icons.mjs). No variant currently overrides custom-art/title.png, so every variant was
-// redoing the identical decode/resize/encode work makeIcons() already did for the previous one.
-// Cache by resolved source path and copy the already-generated files instead of recomputing —
-// same output, just not redundantly recomputed. (Base's OWN icon is the separate hero-composite
-// makeHeroIcon() output above, never reused here — variants intentionally keep the plain crop.)
+// makeHeroIcon() output is a pure function of its source title.png + 3 hero PNGs (5 fixed output
+// filenames — see make-icons.mjs). Variants that don't override any of those 4 files produce byte-
+// identical output to a previous variant (or the base) — cache by the resolved set of source paths
+// and copy the already-generated files instead of recomputing. 2026-07-23: variants now get the
+// same hero-composite icon as the base app (previously a plain title.png crop, before any variant
+// was found to have its own hero art — see git history for the old makeIcons()-based version).
 const ICON_FILES = ['icon-180.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-192.png', 'icon-maskable-512.png'];
-const iconCacheBySource = new Map(); // resolved title.png path -> docs/<id> dir it was first computed into
+const iconCacheBySource = new Map(); // "title.png|hero1.png|hero2.png|hero3.png" -> docs dir it was first computed into
 
 for (const id of ids) {
   console.log(`▶ variant ${id} → docs/${id}/`);
@@ -113,15 +121,18 @@ for (const id of ids) {
   overlayVariantContent(CONTENT_OVERRIDES, id, join(DOCS, id));
   const gametext = join(CONTENT_OVERRIDES, id, 'gametext.txt'); // re-read below for its title
 
-  // Home Screen / install icon from this variant's title.png (falls back to base) — reuse a
-  // prior variant's output if its source resolved to the exact same file.
+  // Home Screen / install icon: this variant's title.png + hero1/2/3.png, each falling back to
+  // the base art independently — reuse a prior variant's output if its FULL resolved source set
+  // (title + all 3 heroes) matches exactly.
   const iconSrc = titlePngFor(id);
-  const cachedDir = iconCacheBySource.get(iconSrc);
+  const heroSrcs = { hero1: heroPngFor(id, 'hero1'), hero2: heroPngFor(id, 'hero2'), hero3: heroPngFor(id, 'hero3') };
+  const cacheKey = [iconSrc, heroSrcs.hero1, heroSrcs.hero2, heroSrcs.hero3].join('|');
+  const cachedDir = iconCacheBySource.get(cacheKey);
   if (cachedDir) {
     for (const f of ICON_FILES) cpSync(join(cachedDir, f), join(DOCS, id, f));
   } else {
-    makeIcons(iconSrc, join(DOCS, id));
-    iconCacheBySource.set(iconSrc, join(DOCS, id));
+    makeHeroIcon(iconSrc, (name) => heroSrcs[name], join(DOCS, id), ICON_BG_SHIFT, ICON_HERO_SCALE);
+    iconCacheBySource.set(cacheKey, join(DOCS, id));
   }
   stampSW(join(DOCS, id));
   // Android install label = this variant's gameTitle (falls back to base).

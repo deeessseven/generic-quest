@@ -3,7 +3,10 @@
 Copy/paste into Play Console. Adapt per store variant if you ship a themed edition.
 
 ## Basics
-- **App name:** Boba Quest  *(≤30 chars)*
+- **App name:** Boba Quest: Turn-Based RPG  *(26/30 chars — ASO keyword variant; this is the Play
+  Store LISTING title only, weighted by Play search/ranking. It's separate from the Android app
+  label under the home-screen icon, which stays plain "Boba Quest" — nothing about the installed
+  app changes. Update via Play Console → Store presence → Main store listing → App name.)*
 - **App type:** Game · **Category:** Role Playing · **Price:** Free · **Ads:** No · **In-app purchases:** No
 - **Contact email:** deeessseven@gmail.com  *(change if you prefer a different public address)*
 - **Privacy policy:** https://deeessseven.github.io/generic-quest/privacy.html
